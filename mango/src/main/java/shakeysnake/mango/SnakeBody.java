@@ -2,33 +2,27 @@ package shakeysnake.mango;
 
 import android.graphics.Point;
 
+import java.util.ArrayList;
+
 final class SnakeBody
 {
-	private Point startpoint = new Point(); //start point
-	private Point endpoint = new Point(); //end point
-	private boolean delete = false; // delete this dead segment
-    private int direction;
+	Point startpoint = new Point(); //start point
+	Point endpoint = new Point(); //end point
+	boolean delete = false; // delete this dead segment
+    int direction;
+    ArrayList<SnakeBody> bodysegments;
 
-	SnakeBody(Point startpoint, int direction)
+	SnakeBody(Point startpoint, int direction, ArrayList<SnakeBody> bodysegment)
 	{
 		this.startpoint.x = startpoint.x;
 		this.startpoint.y = startpoint.y;
 		this.endpoint.x = startpoint.x;
 		this.endpoint.y = startpoint.y;
         this.direction = direction;
+        this.bodysegments = bodysegment;
 	}
 
-	public Point getStartPoint() 
-	{
-		return startpoint;
-	}
-
-	public Point getEndPoint() 
-	{
-		return endpoint;
-	}
-
-    public boolean trim(int length)
+    public void trim(int length)
     {
         switch (direction)
         {
@@ -43,9 +37,9 @@ final class SnakeBody
                 break;
             case Snake.GOING_RIGHT:
                 endpoint.x += length;
-                break;
         }
-        return (getLength() <= 0); // return true if body has reached zero length
+        if (getLength() < 0)
+            bodysegments.remove(this);
     }
 
     public int getLength()

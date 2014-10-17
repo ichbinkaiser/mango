@@ -7,10 +7,10 @@ import shakeysnake.mango.GameActivity.MyDraw;
 
 final class GameSurfaceThread extends Thread 
 {
-	private GameActivity gameactivity;
-	private boolean flag; // game is running
-	private SurfaceHolder myholder;
-	private MyDraw mydraw;
+	GameActivity gameactivity;
+	boolean flag; // game is running
+	SurfaceHolder myholder;
+	MyDraw mydraw;
 	
 	public GameSurfaceThread(GameActivity gameactivity, SurfaceHolder holder , MyDraw drawmain)
 	{
@@ -34,10 +34,12 @@ final class GameSurfaceThread extends Thread
 				canvas = myholder.lockCanvas(null);
 				mydraw.onDraw(canvas);
 			}
+
 			catch (NullPointerException e)
 			{
 				Log.e(this.gameactivity.getLocalClassName(), e.toString());
 			}
+
 			finally
 			{
 				if(canvas != null)

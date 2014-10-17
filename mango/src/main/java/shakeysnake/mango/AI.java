@@ -25,16 +25,17 @@ final class AI implements Runnable
 
 	public void run()
 	{
-		target.x = gameactivity.getCanvasWidth() / 2;
+		target.x = gameactivity.canvaswidth / 2;
 
-		while(gameactivity.isRunning()) // AI Thread
+		while(gameactivity.running) // AI Thread
 		{
 			target.y = 0;
 
 			try
 			{
 				Thread.sleep(10);
-			} 
+			}
+
 			catch (InterruptedException e)
 			{
 				e.printStackTrace();

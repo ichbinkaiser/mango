@@ -20,6 +20,6 @@ public class ScoreActivity extends Activity
 		Intent score = getIntent(); // retrieve score from game activity
 		TextView text;
 		text = (TextView) findViewById(R.id.textView1);
-		text.setText("Your score is " + score.getStringExtra(GameActivity.getScore()));
+		text.setText("Your score is " + score.getStringExtra(GameActivity.score));
 	}
 }

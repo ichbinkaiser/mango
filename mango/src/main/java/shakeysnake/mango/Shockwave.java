@@ -1,67 +1,67 @@
 package shakeysnake.mango;
 
 import android.graphics.Point;
+import android.util.Log;
+
+import java.util.Random;
 
 final class Shockwave 
 {
-	private Point position = new Point();
-	private int life; // animation index life
-	private int type; // shockwave type
+    final static int EXTRA_SMALL_WAVE = 0, SMALL_WAVE = 1, MEDIUM_WAVE = 2, LARGE_WAVE = 3, FOODSPAWN_WAVE = 4;
+	Point position = new Point();
+	int life; // animation index life
+	int type; // shockwave type
+    GameActivity gameActivity;
+    Random rnd = new Random();
 	
 	Shockwave(Point position, int type)
 	{
 		switch (type)
 		{
-		case 0: // extra small wave
-			setLife(11);
-			break;
-		case 1: // small wave
-			setLife(21);
-			break;
-		case 2: // medium wave
-			setLife(128);
-			break;
-		case 3: // large wave
-			setLife(252);
-			break;
+            case EXTRA_SMALL_WAVE:
+                life = 11;
+                break;
+            case SMALL_WAVE:
+                life = 21;
+                break;
+            case MEDIUM_WAVE:
+                life = 128;
+                break;
+            case LARGE_WAVE:
+                life = 252;
+                break;
 		}
-		this.setType(type);
-		this.getPosition().x = position.x;
-		this.getPosition().y = position.y;
+		this.type = type;
+		this.position.x = position.x;
+		this.position.y = position.y;
 	}
+
+    Shockwave(GameActivity gameActivity)
+    {
+        this.type = FOODSPAWN_WAVE;
+        this.gameActivity = gameActivity;
+        position.set(rnd.nextInt(gameActivity.canvaswidth - (gameActivity.headsize * 2) + gameActivity.headsize), rnd.nextInt(gameActivity.canvasheight - (gameActivity.headsize * 2) + gameActivity.headsize));
+        life = 252;
+    }
+
 
     public int getLife()
     {
         switch (type)
         {
-            case 0 :
-            case 1 :
+            case EXTRA_SMALL_WAVE:
+            case SMALL_WAVE:
                 return life -= 1;
-            case 2 :
-            case 3 :
+            case MEDIUM_WAVE:
+            case LARGE_WAVE:
                 return life -= 4;
-            default :
+            case FOODSPAWN_WAVE:
+                if (life < 5)
+                    gameActivity.food.add(new Food(gameActivity, position));
+
+                return life -= 4;
+            default:
                 return life;
         }
     }
-
-	public void setLife(int life)
-	{
-		this.life = life;
-	}
-
-	public int getType() 
-	{
-		return type;
-	}
-
-	public void setType(int type) 
-	{
-		this.type = type;
-	}
-
-	public Point getPosition() 
-	{
-		return position;
-	}
 }

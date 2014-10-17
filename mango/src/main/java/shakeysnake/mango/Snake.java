@@ -8,44 +8,44 @@ import java.util.Random;
 
 final class Snake implements Runnable
 {
-    final static byte GOING_UP = 0, GOING_RIGHT = 1, GOING_DOWN = 2, GOING_LEFT = 3;
-	private GameActivity gameactivity;
-	private Point position = new Point();
-	private Point pposition = new Point(); // previous position
-	private Random rnd = new Random();
-	private boolean collide = false; // has collided
-    private boolean dead = false; // is dead
-    private int spawnwave; // spawn wave animation
-    private byte speed = 8, direction; // speed and direction;
-    private short length = 100, currentlength; //snake length
+    final static int GOING_UP = 0, GOING_RIGHT = 1, GOING_DOWN = 2, GOING_LEFT = 3;
+	GameActivity gameactivity;
+	Point position = new Point();
+	Point pposition = new Point(); // previous position
+	Random rnd = new Random();
+	boolean collide = false; // has collided
+    boolean dead = false; // is dead
+    int spawnwave; // spawn wave animation
+    int speed = 8, direction; // speed and direction;
+    int length = 100, currentlength; //snake length
 
-    private ArrayList<SnakeBody> bodysegments = new ArrayList<SnakeBody>();
+    ArrayList<SnakeBody> bodysegments = new ArrayList<SnakeBody>();
 
 	Snake(GameActivity gameActivity, ArrayList<Snake> snake)
 	{
 		this.gameactivity = gameActivity;
-        direction = (byte)rnd.nextInt(3);
+        direction = rnd.nextInt(3);
 
         switch (direction)
         {
             case GOING_UP:
-                position.x = rnd.nextInt((gameActivity.getCanvasWidth() / 3) + (gameActivity.getCanvasWidth() / 3));
-                position.y = gameActivity.getCanvasHeight();
+                position.x = rnd.nextInt((gameActivity.canvaswidth / 3) + (gameActivity.canvaswidth / 3));
+                position.y = gameActivity.canvasheight;
                 break;
             case GOING_RIGHT:
                 position.x = 0;
-                position.y = rnd.nextInt((gameActivity.getCanvasHeight() / 3) + (gameActivity.getCanvasHeight() / 3));
+                position.y = rnd.nextInt((gameActivity.canvasheight / 3) + (gameActivity.canvasheight / 3));
                 break;
             case GOING_DOWN:
-                position.x = rnd.nextInt((gameActivity.getCanvasWidth() / 3) + (gameActivity.getCanvasWidth() / 3));
+                position.x = rnd.nextInt((gameActivity.canvaswidth / 3) + (gameActivity.canvaswidth / 3));
                 position.y = 0;
                 break;
             case GOING_LEFT:
-                position.x = gameActivity.getCanvasWidth();
-                position.y = rnd.nextInt((gameActivity.getCanvasHeight() / 3) + (gameActivity.getCanvasHeight() / 3));
+                position.x = gameActivity.canvaswidth;
+                position.y = rnd.nextInt((gameActivity.canvasheight / 3) + (gameActivity.canvasheight / 3));
                 break;
         }
-        bodysegments.add(new SnakeBody(position, direction));
+        bodysegments.add(new SnakeBody(position, direction, bodysegments));
 		start();
 	}
 
@@ -64,63 +64,61 @@ final class Snake implements Runnable
 
 	public void run()
 	{
-		while((gameactivity.isRunning()) && (!dead))
+		while((gameactivity.running) && (!dead))
 		{
 			pposition.x = position.x;
 			pposition.y = position.y;
-
             switch (direction)
             {
                 case GOING_UP:
                     position.y -= speed;
-                    bodysegments.get(bodysegments.size() -1).getStartPoint().y = position.y;
+                    bodysegments.get(bodysegments.size() - 1).startpoint.y = position.y;
                     break;
                 case GOING_RIGHT:
                     position.x += speed;
-                    bodysegments.get(bodysegments.size() -1).getStartPoint().x = position.x;
+                    bodysegments.get(bodysegments.size() - 1).startpoint.x = position.x;
                     break;
                 case GOING_DOWN:
                     position.y += speed;
-                    bodysegments.get(bodysegments.size() -1).getStartPoint().y = position.y;
+                    bodysegments.get(bodysegments.size() - 1).startpoint.y = position.y;
                     break;
                 case GOING_LEFT:
                     position.x -= speed;
-                    bodysegments.get(bodysegments.size() -1).getStartPoint().x = position.x;
-                    break;
+                    bodysegments.get(bodysegments.size() - 1).startpoint.x = position.x;
             }
 
 			if (spawnwave > 0) // spawn_wave animation
 			{
-				gameactivity.getShockwave().add(new Shockwave(position, 1));
+				gameactivity.shockwave.add(new Shockwave(position, 1));
 				spawnwave--;
 			}
 
 			if (position.x < 0) // head has reached left wall
             {
-                position.x = gameactivity.getCanvasWidth();
+                position.x = gameactivity.canvaswidth;
                 pposition.x = position.x;
-                bodysegments.add(new SnakeBody(position, direction));
+                bodysegments.add(new SnakeBody(position, direction, bodysegments));
             }
 
-            else if (position.x > gameactivity.getCanvasWidth()) // head has reached right wall
+            else if (position.x > gameactivity.canvaswidth) // head has reached right wall
             {
                 position.x = 0;
                 pposition.x = position.x;
-                bodysegments.add(new SnakeBody(position, direction));
+                bodysegments.add(new SnakeBody(position, direction, bodysegments));
             }
 
-            else if (position.y > gameactivity.getCanvasHeight()) // head has reached bottom wall
+            else if (position.y > gameactivity.canvasheight) // head has reached bottom wall
             {
                 position.y = 0;
                 pposition.y = position.y;
-                bodysegments.add(new SnakeBody(position, direction));
+                bodysegments.add(new SnakeBody(position, direction, bodysegments));
             }
 
             else if (position.y < 0)
             {
-                position.y = gameactivity.getCanvasHeight();
+                position.y = gameactivity.canvasheight;
                 pposition.y = position.y;
-                bodysegments.add(new SnakeBody(position, direction));
+                bodysegments.add(new SnakeBody(position, direction, bodysegments));
             }
 
             currentlength = 0;
@@ -129,16 +127,14 @@ final class Snake implements Runnable
                 currentlength += bodysegments.get(bodysegmentscounter).getLength();
             }
 
-            if (currentlength > length);
-                if ((bodysegments.get(0).trim(currentlength - length)) && (bodysegments.size() > 1))
-                {
-                    bodysegments.remove(0);
-                }
+            if (currentlength > length)
+                bodysegments.get(0).trim(currentlength - length);
 
 			try
 			{
 				Thread.sleep(40);
-			} 
+			}
+
 			catch (InterruptedException e)
 			{
 				e.printStackTrace();
@@ -147,32 +143,17 @@ final class Snake implements Runnable
 		}
 	}
 
-    public void setDirection(byte direction)
+    public void setDirection(int direction)
     {
         if (((this.direction == GOING_LEFT) || (this.direction == GOING_RIGHT)) && ((direction == GOING_UP) || (direction == GOING_DOWN)))
         {
             this.direction = direction;
-            bodysegments.add(new SnakeBody(position, direction));
+            bodysegments.add(new SnakeBody(position, direction, bodysegments));
         }
         else if (((this.direction == GOING_DOWN) || (this.direction == GOING_UP)) && ((direction == GOING_LEFT) || (direction == GOING_RIGHT)))
         {
             this.direction = direction;
-            bodysegments.add(new SnakeBody(position, direction));
+            bodysegments.add(new SnakeBody(position, direction, bodysegments));
         }
-    }
-
-	public Point getPosition() 
-	{
-		return position;
-	}
-
-	public boolean isDead()
-	{
-		return dead;
-	}
-
-    public ArrayList<SnakeBody> getBody()
-    {
-        return bodysegments;
     }
 }
