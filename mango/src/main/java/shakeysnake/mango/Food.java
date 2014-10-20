@@ -29,7 +29,7 @@ final class Food implements Runnable
         Random rnd = new Random();
         try
         {
-            Thread.sleep(5 + (rnd.nextInt(10) * 1000));
+            Thread.sleep(5 + (rnd.nextInt(15) * 1000));
         }
 
         catch (InterruptedException e)

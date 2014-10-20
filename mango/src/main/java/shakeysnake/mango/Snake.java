@@ -14,35 +14,35 @@ final class Snake implements Runnable
 	Point pposition = new Point(); // previous position
 	Random rnd = new Random();
 	boolean collide = false; // has collided
-    boolean dead = false; // is dead
+    boolean dead = false, evaded = true;
     int spawnwave; // spawn wave animation
     int speed = 8, direction; // speed and direction;
-    int length = 100, currentlength; //snake length
+    int length = 100, currentlength; //snakelist length
 
     ArrayList<SnakeBody> bodysegments = new ArrayList<SnakeBody>();
 
-	Snake(GameActivity gameActivity, ArrayList<Snake> snake)
+	Snake(GameActivity gameactivity, ArrayList<Snake> snake)
 	{
-		this.gameactivity = gameActivity;
+		this.gameactivity = gameactivity;
         direction = rnd.nextInt(3);
 
         switch (direction)
         {
             case GOING_UP:
-                position.x = rnd.nextInt((gameActivity.canvaswidth / 3) + (gameActivity.canvaswidth / 3));
-                position.y = gameActivity.canvasheight;
+                position.x = rnd.nextInt((gameactivity.canvaswidth / 3) + (gameactivity.canvaswidth / 3));
+                position.y = gameactivity.canvasheight;
                 break;
             case GOING_RIGHT:
                 position.x = 0;
-                position.y = rnd.nextInt((gameActivity.canvasheight / 3) + (gameActivity.canvasheight / 3));
+                position.y = rnd.nextInt((gameactivity.canvasheight / 3) + (gameactivity.canvasheight / 3));
                 break;
             case GOING_DOWN:
-                position.x = rnd.nextInt((gameActivity.canvaswidth / 3) + (gameActivity.canvaswidth / 3));
+                position.x = rnd.nextInt((gameactivity.canvaswidth / 3) + (gameactivity.canvaswidth / 3));
                 position.y = 0;
                 break;
             case GOING_LEFT:
-                position.x = gameActivity.canvaswidth;
-                position.y = rnd.nextInt((gameActivity.canvasheight / 3) + (gameActivity.canvasheight / 3));
+                position.x = gameactivity.canvaswidth;
+                position.y = rnd.nextInt((gameactivity.canvasheight / 3) + (gameactivity.canvasheight / 3));
                 break;
         }
         bodysegments.add(new SnakeBody(position, direction, bodysegments));
@@ -64,6 +64,9 @@ final class Snake implements Runnable
 
 	public void run()
 	{
+        if (gameactivity.snakes.size() > 1)
+            gameactivity.AI.add(new AI (gameactivity, gameactivity.snakes, this));
+
 		while((gameactivity.running) && (!dead))
 		{
 			pposition.x = position.x;
@@ -130,6 +133,25 @@ final class Snake implements Runnable
             if (currentlength > length)
                 bodysegments.get(0).trim(currentlength - length);
 
+            for (int snakecounter = 0; snakecounter < gameactivity.snakes.size(); snakecounter++)
+            {
+                Snake currentsnake = gameactivity.snakes.get(snakecounter);
+                if (currentsnake != this)
+                {
+                    for (int bodysegmentcounter = 0; bodysegmentcounter < currentsnake.bodysegments.size(); bodysegmentcounter++)
+                    {
+                        SnakeBody currentbodysegment = currentsnake.bodysegments.get(bodysegmentcounter);
+                        if ((isHitting(currentbodysegment, gameactivity.headsize)) && (isIntersecting(currentbodysegment)) || (isHeadOn(currentsnake, gameactivity.headsize)))
+                        {
+                            gameactivity.doShake(1000);
+                        }
+                    }
+                }
+            }
+
+            if (!evaded)
+                evaded = true;
+
 			try
 			{
 				Thread.sleep(40);
@@ -145,15 +167,76 @@ final class Snake implements Runnable
 
     public void setDirection(int direction)
     {
-        if (((this.direction == GOING_LEFT) || (this.direction == GOING_RIGHT)) && ((direction == GOING_UP) || (direction == GOING_DOWN)))
+        if (this.direction == GOING_LEFT || this.direction == GOING_RIGHT && direction == GOING_UP || direction == GOING_DOWN)
         {
             this.direction = direction;
             bodysegments.add(new SnakeBody(position, direction, bodysegments));
         }
-        else if (((this.direction == GOING_DOWN) || (this.direction == GOING_UP)) && ((direction == GOING_LEFT) || (direction == GOING_RIGHT)))
+        else if (this.direction == GOING_DOWN || this.direction == GOING_UP && direction == GOING_LEFT || direction == GOING_RIGHT)
         {
             this.direction = direction;
             bodysegments.add(new SnakeBody(position, direction, bodysegments));
         }
+    }
+
+    public  boolean isHitting(SnakeBody bodysegment, int adjustment) // relative to current snake direction
+    {
+        switch (bodysegment.direction)
+        {
+            case Snake.GOING_UP:
+            case Snake.GOING_DOWN:
+                if (direction == GOING_LEFT)
+                    return position.x < (bodysegment.startpoint.x + adjustment) && position.x > bodysegment.startpoint.x;
+                else if (direction == GOING_RIGHT)
+                    return position.x > (bodysegment.startpoint.x - adjustment) && position.x < bodysegment.startpoint.x;
+                break;
+            case Snake.GOING_RIGHT:
+            case Snake.GOING_LEFT:
+                if (direction == GOING_UP)
+                    return position.y < (bodysegment.startpoint.y + adjustment) && position.y > bodysegment.startpoint.y;
+                else if (direction == GOING_DOWN)
+                    return position.y > (bodysegment.startpoint.y - adjustment) && position.y < bodysegment.startpoint.y;
+        }
+        return false;
+    }
+
+    public boolean isIntersecting(SnakeBody bodysegment)
+    {
+        switch (bodysegment.direction)
+        {
+            case GOING_UP:
+                return position.y >= bodysegment.startpoint.y && position.y <= bodysegment.endpoint.y;
+            case GOING_DOWN:
+                return position.y <= bodysegment.startpoint.y && position.y >= bodysegment.endpoint.y;
+            case GOING_LEFT:
+                return position.x >= bodysegment.startpoint.x && position.x <= bodysegment.endpoint.x;
+            case GOING_RIGHT:
+                return position.x <= bodysegment.startpoint.x && position.x >= bodysegment.endpoint.x;
+            default:
+                return false;
+        }
+    }
+
+    public boolean isHeadOn(Snake snake, int adjustment)
+    {
+        switch (direction)
+        {
+            case GOING_UP:
+                if (snake.direction == GOING_DOWN)
+                    return (position.x < snake.position.x - adjustment) && (position.x > snake.position.x + adjustment) && (position.y < snake.position.y + adjustment) && (position.y > snake.position.y - adjustment);
+                break;
+            case GOING_DOWN:
+                if (snake.direction == GOING_UP)
+                    return (position.x < snake.position.x - adjustment) && (position.x > snake.position.x + adjustment) && (position.y > snake.position.y - adjustment) && (position.y < snake.position.y + adjustment);
+                break;
+            case GOING_LEFT:
+                if (snake.direction == GOING_RIGHT)
+                    return (position.y < snake.position.y + adjustment) && (position.y > snake.position.y - adjustment) && (position.x > snake.position.y - adjustment) && (position.x < snake.position.y - adjustment);
+                break;
+            case GOING_RIGHT:
+                if (snake.direction == GOING_LEFT)
+                    return (position.y < snake.position.x + adjustment) && (position.y > snake.position.x - adjustment) && (position.x < snake.position.y - adjustment) && (position.x > snake.position.y + adjustment);
+        }
+        return false;
     }
 }

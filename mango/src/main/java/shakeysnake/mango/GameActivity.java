@@ -33,7 +33,7 @@ public class GameActivity extends Activity implements SensorEventListener
 	boolean running = true; // game running
 	boolean gameover = false;
 	static String score;
-	int headsize; // snake head
+	int headsize; // snakelist head
 	boolean sologame = true;
 	int players;
 	static SoundManager soundmanager = new SoundManager(); // global sound manager
@@ -41,6 +41,7 @@ public class GameActivity extends Activity implements SensorEventListener
 	ArrayList<Shockwave> shockwave = new ArrayList<Shockwave>(); // shockwave animation list
 	ArrayList<Snake> snakes = new ArrayList<Snake>(); // snakes list
     ArrayList<Food> food = new ArrayList<Food>(); // food list
+    ArrayList<AI> AI = new ArrayList<AI>(); // snakes list
 	PowerManager.WakeLock wakelock;
 	GameSurfaceThread gamesurfacethread;
 	SurfaceHolder surfaceholder;
@@ -199,6 +200,9 @@ public class GameActivity extends Activity implements SensorEventListener
             uptouch = new Point();
 
             snakes.add(new Snake(GameActivity.this, snakes));
+            snakes.add(new Snake(GameActivity.this, snakes));
+            snakes.add(new Snake(GameActivity.this, snakes));
+            snakes.add(new Snake(GameActivity.this, snakes));
 
 			back = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.back), canvaswidth, canvasheight, true);
 			Log.i(getLocalClassName(), "Portrait background created");
@@ -304,7 +308,7 @@ public class GameActivity extends Activity implements SensorEventListener
                 canvas.drawCircle(food.get(foodcounter).position.x, food.get(foodcounter).position.y, headsize, pint);
             }
 
-			for (int snakecounter = snakes.size() - 1; snakecounter >= 0; snakecounter--) // snakes drawer
+			for (int snakecounter = 0; snakecounter < snakes.size(); snakecounter++) // snakes drawer
 			{
                 Snake currentsnake = snakes.get(snakecounter);
 				if (currentsnake.dead)
@@ -321,7 +325,7 @@ public class GameActivity extends Activity implements SensorEventListener
                 }
 			}
 
-            for (int shockwavecounter = shockwave.size() - 1; shockwavecounter >= 0; shockwavecounter--)  // shockwave drawer
+            for (int shockwavecounter = 0; shockwavecounter < shockwave.size(); shockwavecounter++)  // shockwave drawer
             {
                 Shockwave currentshockwave = shockwave.get(shockwavecounter);
                 if (currentshockwave.getLife() > 0) // bump animation
@@ -359,7 +363,7 @@ public class GameActivity extends Activity implements SensorEventListener
                     shockwave.remove(shockwavecounter); // remove dead shockwave
             }
 
-            for (int popupcounter = popup.size() - 1; popupcounter >= 0; popupcounter--) // popup text drawer
+            for (int popupcounter = 0; popupcounter < popup.size(); popupcounter++) // popup text drawer
             {
                 Popup currentpopup = popup.get(popupcounter);
                 if (currentpopup.getCounter() > 0) // if popup text is to be shown
