@@ -42,7 +42,7 @@ public class SplashActivity extends Activity
         public void run()
         {
             GameActivity.soundmanager.loadSounds();
-            while(!(GameActivity.soundmanager.soundsloaded == GameActivity.soundmanager.soundlibrary.length))
+            while(GameActivity.soundmanager.soundsloaded != GameActivity.soundmanager.soundlibrary.length)
             {
                 try
                 {

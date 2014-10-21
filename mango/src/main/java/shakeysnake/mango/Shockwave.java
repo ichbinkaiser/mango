@@ -61,7 +61,7 @@ final class Shockwave
 
                 return life -= 4;
             default:
-                return life;
+                return 0;
         }
     }
 }

@@ -49,8 +49,6 @@ public class GameActivity extends Activity implements SensorEventListener
 	Sensor orientation;
 	float rollangle = 0;
 	Random rnd = new Random();
-
-	AI ai; // set AI
     Point uptouch, downtouch; // player uptouch position
 
 	@Override 
@@ -126,6 +124,11 @@ public class GameActivity extends Activity implements SensorEventListener
 
 	private class GlobalThread implements Runnable
 	{
+        GlobalThread()
+        {
+            start();
+        }
+
 		public void start()
 		{
 			Thread thread = new Thread(this);
@@ -141,7 +144,6 @@ public class GameActivity extends Activity implements SensorEventListener
 				{
 					running =  false;
 					gameover = true;
-					gamesurfacethread.setFlag(false);
 					soundmanager.playSound(7, 1);
 					showScore();
 				}
@@ -171,15 +173,12 @@ public class GameActivity extends Activity implements SensorEventListener
 		String[] lostlifestrings = new String[] {"YOU SUCK!", "LOSER!", "GO HOME!", "REALLY?!", "WIMP!", "SUCKER!", "HAHAHA!", "YOU MAD?!", "DIE!", "BOOM!"};
 		String[] bumpstrings = new String[] {"BUMP!", "TOINK!", "BOINK!", "BAM!", "WABAM!"};
 		String[] zoomstrings = new String[] {"ZOOM!", "WOOSH!", "SUPER MODE!", "ZOOMBA!", "WARPSPEED!"};
-		Paint pint = new Paint(); // snakes paint
+		Paint foodpaint = new Paint(); // food paint
+        Paint snakejointpaint = new Paint();
         Paint snakepaint = new Paint();
 		Paint scoretext = new Paint();
 		Paint popuptext = new Paint();
-		Paint balltrail = new Paint(); // snakes tail
 		Paint circlestrokepaint = new Paint();
-		Paint centerlinepaint = new Paint();
-		Paint shadowpaint = new Paint();
-		Paint buzzballpaint = new Paint();
 		GlobalThread globalthread;
 
 		public MyDraw(Context context)
@@ -199,11 +198,6 @@ public class GameActivity extends Activity implements SensorEventListener
             downtouch = new Point();
             uptouch = new Point();
 
-            snakes.add(new Snake(GameActivity.this, snakes));
-            snakes.add(new Snake(GameActivity.this, snakes));
-            snakes.add(new Snake(GameActivity.this, snakes));
-            snakes.add(new Snake(GameActivity.this, snakes));
-
 			back = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.back), canvaswidth, canvasheight, true);
 			Log.i(getLocalClassName(), "Portrait background created");
 
@@ -213,8 +207,6 @@ public class GameActivity extends Activity implements SensorEventListener
 
 			popuptext.setTypeface(myType);
 			popuptext.setTextAlign(Align.CENTER);
-
-			centerlinepaint.setStrokeWidth(3);
 
 			if (metrics.densityDpi == DisplayMetrics.DENSITY_LOW) // adjust to low DPI
 			{
@@ -232,7 +224,7 @@ public class GameActivity extends Activity implements SensorEventListener
 				Log.i(getLocalClassName(), "Screen DPI is not low, adjustment sizes set to normal");
 			}
 
-			pint.setColor(Color.WHITE);
+            foodpaint.setColor(Color.WHITE);
             snakepaint.setColor(Color.WHITE);
             snakepaint.setStyle(Paint.Style.STROKE);
             snakepaint.setStrokeWidth(headsize * 2);
@@ -243,13 +235,15 @@ public class GameActivity extends Activity implements SensorEventListener
 			else
 				Log.i(getLocalClassName(), "Balls initialized");
 
+            snakes.add(new Snake(GameActivity.this));
+            snakes.add(new Snake(GameActivity.this));
+            snakes.add(new Snake(GameActivity.this));
+            snakes.add(new Snake(GameActivity.this));
 			globalthread = new GlobalThread();
-			globalthread.start();
 		}
 
 		public void surfaceDestroyed(SurfaceHolder holder) // when user leaves game
 		{
-			gamesurfacethread.setFlag(false);
 			running = false ;
 			Log.i(getLocalClassName(), "Surface destroyed");
 		}
@@ -262,22 +256,18 @@ public class GameActivity extends Activity implements SensorEventListener
 		public void surfaceCreated(SurfaceHolder holder) // when user enters game
 		{
 			gamesurfacethread = new GameSurfaceThread(GameActivity.this, holder, this);
-			gamesurfacethread.setFlag(true);
-			gamesurfacethread.start();
 			Log.i(getLocalClassName(), "Surface created");
 		}
 		
 		public boolean onTouchEvent(MotionEvent event)
 		{
-			int action = event.getAction();
-
-            if (action == MotionEvent.ACTION_DOWN)
+            if (event.getAction() == MotionEvent.ACTION_DOWN)
             {
                 downtouch.x = (int)event.getX();
                 downtouch.y = (int)event.getY();
             }
 
-			if (action == MotionEvent.ACTION_UP)
+			if (event.getAction() == MotionEvent.ACTION_UP)
 			{
                 uptouch.x = (int)event.getX();
                 uptouch.y = (int)event.getY();
@@ -305,7 +295,7 @@ public class GameActivity extends Activity implements SensorEventListener
 
             for (int foodcounter = 0; foodcounter < food.size(); foodcounter++)
             {
-                canvas.drawCircle(food.get(foodcounter).position.x, food.get(foodcounter).position.y, headsize, pint);
+                canvas.drawCircle(food.get(foodcounter).position.x, food.get(foodcounter).position.y, headsize, foodpaint);
             }
 
 			for (int snakecounter = 0; snakecounter < snakes.size(); snakecounter++) // snakes drawer
@@ -315,12 +305,23 @@ public class GameActivity extends Activity implements SensorEventListener
 					snakes.remove(snakecounter);
 				else
                 {
-                    canvas.drawCircle(currentsnake.position.x, currentsnake.position.y, headsize, pint);
+                    if (snakecounter == 0)
+                    {
+                        snakejointpaint.setColor(Color.GRAY);
+                        snakepaint.setColor(Color.GRAY);
+                    }
+                    else
+                    {
+                        snakejointpaint.setColor(Color.WHITE);
+                        snakepaint.setColor(Color.WHITE);
+                    }
+
+                    canvas.drawCircle(currentsnake.position.x, currentsnake.position.y, headsize, snakejointpaint);
                     for (int bodycounter = 0; bodycounter < currentsnake.bodysegments.size(); bodycounter++)
                     {
                         SnakeBody currentsegment = currentsnake.bodysegments.get(bodycounter);
                         canvas.drawLine(currentsegment.startpoint.x, currentsegment.startpoint.y, currentsegment.endpoint.x, currentsegment.endpoint.y, snakepaint);
-                        canvas.drawCircle(currentsegment.endpoint.x, currentsegment.endpoint.y, headsize, pint);
+                        canvas.drawCircle(currentsegment.endpoint.x, currentsegment.endpoint.y, headsize, snakejointpaint);
                     }
                 }
 			}

@@ -8,7 +8,6 @@ import shakeysnake.mango.GameActivity.MyDraw;
 final class GameSurfaceThread extends Thread 
 {
 	GameActivity gameactivity;
-	boolean flag; // game is running
 	SurfaceHolder myholder;
 	MyDraw mydraw;
 	
@@ -18,16 +17,13 @@ final class GameSurfaceThread extends Thread
 		setName("SurfaceView");
 		myholder = holder;
 		mydraw = drawmain;
+        start();
 	}
 
-	public void setFlag (boolean myFlag)
-	{
-		flag = myFlag;
-	}
 	public void run()
 	{
 		Canvas canvas = null;
-		while(flag)
+		while(gameactivity.running)
 		{
 			try
 			{

@@ -8,6 +8,7 @@ final class Food implements Runnable
 {
     Point position;
     GameActivity gameActivity;
+    boolean exists = true;
 
     Food(GameActivity gameActivity, Point position)
     {
@@ -29,7 +30,7 @@ final class Food implements Runnable
         Random rnd = new Random();
         try
         {
-            Thread.sleep(5 + (rnd.nextInt(15) * 1000));
+            Thread.sleep((5 + rnd.nextInt(15)) * 1000);
         }
 
         catch (InterruptedException e)
@@ -38,9 +39,17 @@ final class Food implements Runnable
             Log.e("Food", e.toString());
         }
 
-        gameActivity.shockwave.add(new Shockwave(position, Shockwave.SMALL_WAVE));
-        gameActivity.food.remove(this);
+        if (exists)
+        {
+            gameActivity.shockwave.add(new Shockwave(position, Shockwave.SMALL_WAVE));
+            gameActivity.food.remove(this);
+        }
+    }
 
+    public void eat()
+    {
+        exists = false;
+        gameActivity.food.remove(this);
     }
 }
 
