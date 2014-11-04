@@ -29,13 +29,12 @@ public class GameActivity extends Activity implements SensorEventListener
 	int midpoint; // canvas horizontal midpoint
 	int life = 50;
 	int gamescore = 0;
-	int ballcount = 5;
+	int AIcount = 3;
 	boolean running = true; // game running
 	boolean gameover = false;
 	static String score;
 	int headsize; // snakelist head
 	boolean sologame = true;
-	int players;
 	static SoundManager soundmanager = new SoundManager(); // global sound manager
 	ArrayList<Popup> popup = new ArrayList<Popup>(); // popup messages array list
 	ArrayList<Shockwave> shockwave = new ArrayList<Shockwave>(); // shockwave animation list
@@ -64,17 +63,14 @@ public class GameActivity extends Activity implements SensorEventListener
 		final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 		this.wakelock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "My Tag");
 		this.wakelock.acquire();
-
-		if (getIntent().getIntExtra("BALLS_COUNT", -1) > 0)
-			ballcount = getIntent().getIntExtra("BALLS_COUNT", -1); // retrieve snakes count from main activity
 		
 		sologame = getIntent().getBooleanExtra("SOLO_GAME", false);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
 
-		if (sologame)
-			players = 1;
-		else
-			players = 2;
+        if (sologame)
+            AIcount = 0;
+        else if (getIntent().getIntExtra("AI_COUNT", -1) > 0)
+            AIcount = getIntent().getIntExtra("AI_COUNT", -1); // retrieve snakes count from main activity
 
 		LinearLayout lLayout = new LinearLayout(getApplicationContext());
 		MyDraw mydraw = new MyDraw(getApplicationContext()); // set SurfaceView
@@ -230,15 +226,18 @@ public class GameActivity extends Activity implements SensorEventListener
             snakepaint.setStrokeWidth(headsize * 2);
 			circlestrokepaint.setStyle(Paint.Style.STROKE);
 
+            snakes.add(new Snake(GameActivity.this));
+
+            for (int snakecounter = 0; snakecounter < AIcount; snakecounter++)
+            {
+                snakes.add(new Snake(GameActivity.this));
+            }
+
 			if (snakes.size() == 1)
 				Log.i(getLocalClassName(), "Snake initialized");
 			else
-				Log.i(getLocalClassName(), "Balls initialized");
+				Log.i(getLocalClassName(), "Snakes initialized");
 
-            snakes.add(new Snake(GameActivity.this));
-            snakes.add(new Snake(GameActivity.this));
-            snakes.add(new Snake(GameActivity.this));
-            snakes.add(new Snake(GameActivity.this));
 			globalthread = new GlobalThread();
 		}
 
