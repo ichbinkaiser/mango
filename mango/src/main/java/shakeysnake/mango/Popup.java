@@ -6,7 +6,7 @@ import java.util.Random;
 
 final class Popup 
 {
-    final static int SCOREUP = 0, LOSELIFE = 1, SOLO = 2;
+    final static int YEY = 0, BOO = 1, BUMP = 2;
 	Point position = new Point();
 	int counter = 255; // animation index counter
 	int type; // popup message type
@@ -17,18 +17,7 @@ final class Popup
 	{
 		this.type = type;
 		this.position.x = position.x;
-		
-		switch(type)
-		{
-            case SCOREUP:
-                this.position.y = position.y + 255;
-                break;
-            case LOSELIFE:
-                this.position.y = position.y - 255;
-                break;
-            case SOLO:
-                this.position.y = position.y - 255;
-		}
+        this.position.y = position.y - 255;
 	}
 
 	public int getCounter() 

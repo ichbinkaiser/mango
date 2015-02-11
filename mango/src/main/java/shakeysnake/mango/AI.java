@@ -12,10 +12,10 @@ final class AI implements Runnable
 	ArrayList<Snake> snakelist = new ArrayList<Snake>();
 	Food target = null;
     Snake snake;
-    boolean alive = true;
     Random rnd = new Random();
     int sensitivity = 50;
     Point turnpoint = new Point();
+    boolean avoid[] = new boolean[]{false, false, false, false};
 
 	AI(GameActivity gameActivity, ArrayList<Snake> snakelist, Snake snake)
 	{
@@ -35,9 +35,49 @@ final class AI implements Runnable
 
 	public void run()
 	{
-		while(gameactivity.running) // AI Thread
+		while(gameactivity.running && snake.alive) // AI Thread
 		{
-            if (gameactivity.food.size() > 0)
+
+            if (snake.getMoved(turnpoint) > snake.speed)
+            {
+                avoid = new boolean[]{false, false, false, false};
+                for (int snakecounter = 0; snakecounter < gameactivity.snakes.size(); snakecounter++)
+                {
+                    Snake currentsnake = gameactivity.snakes.get(snakecounter);
+                    SnakeBody lastbodysegment = snake.bodysegments.get(snake.bodysegments.size() - 1);
+                    for (int bodysegmentcounter = 0; bodysegmentcounter < currentsnake.bodysegments.size(); bodysegmentcounter++)
+                    {
+                        SnakeBody currentbodysegment = currentsnake.bodysegments.get(bodysegmentcounter);
+
+                        for (int directioncounter = 0; directioncounter < 4; directioncounter++)
+                        {
+                            if (!avoid[directioncounter])
+                                avoid[directioncounter] = currentbodysegment != lastbodysegment && snake.detectCollision(currentbodysegment, sensitivity, gameactivity.headsize * 2, directioncounter);
+                        }
+                    }
+                }
+            }
+
+            switch (snake.direction)
+            {
+                case Snake.GOING_UP:
+                    if (avoid[Snake.GOING_UP])
+                        turnTo(false);
+                    break;
+                case Snake.GOING_DOWN:
+                    if (avoid[Snake.GOING_DOWN])
+                        turnTo(false);
+                    break;
+                case Snake.GOING_LEFT:
+                    if (avoid[Snake.GOING_LEFT])
+                        turnTo(true);
+                    break;
+                case Snake.GOING_RIGHT:
+                    if (avoid[Snake.GOING_RIGHT])
+                        turnTo(true);
+            }
+
+            if (snake.getMoved(turnpoint) > snake.speed && gameactivity.food.size() > 0)
             {
                 int foodpriority = gameactivity.canvasheight + gameactivity.canvaswidth;
                 int currentfoodpriority;
@@ -53,58 +93,30 @@ final class AI implements Runnable
 
                 if (snake.direction == Snake.GOING_UP || snake.direction == Snake.GOING_DOWN)
                 {
-                    if (Math.abs(target.position.y - snake.position.y) <= gameactivity.headsize * 2)
+                    if (Math.abs(target.position.y - snake.position.y) <= gameactivity.headsize * 2 || (Math.abs(target.position.y - snake.position.y) < gameactivity.canvasheight / 2 && (snake.direction == Snake.GOING_UP && target.position.y > snake.position.y) || (snake.direction == Snake.GOING_DOWN && target.position.y < snake.position.y)))
                     {
                         if (target.position.x < snake.position.x)
-                            snake.setDirection(Snake.GOING_LEFT);
+                            turnTo(Snake.GOING_LEFT, false);
                         else if (target.position.x > snake.position.x)
-                            snake.setDirection(Snake.GOING_RIGHT);
+                            turnTo(Snake.GOING_RIGHT, false);
                     }
                 }
 
                 else
                 {
-                    if (Math.abs(target.position.x - snake.position.x) <= gameactivity.headsize * 2)
+                    if (Math.abs(target.position.x - snake.position.x) <= gameactivity.headsize * 2 || (Math.abs(target.position.x - snake.position.x) < gameactivity.canvaswidth / 2 && (snake.direction == Snake.GOING_LEFT && target.position.x > snake.position.x) || (snake.direction == Snake.GOING_RIGHT && target.position.x < snake.position.x)))
                     {
                         if (target.position.y > snake.position.y)
-                            snake.setDirection(Snake.GOING_DOWN);
+                            turnTo(Snake.GOING_DOWN, false);
                         else if (target.position.y < snake.position.y)
-                            snake.setDirection(Snake.GOING_UP);
+                            turnTo(Snake.GOING_UP, false);
                     }
                 }
             }
 
-            if (gameactivity.food.indexOf(target) < 0 && rnd.nextInt(100) == 0)
-                snake.setDirection(rnd.nextInt(3));
-
-            for (int snakecounter = 0; snakecounter < gameactivity.snakes.size(); snakecounter++)
+            else if (snake.getMoved(turnpoint) > snake.speed && gameactivity.food.indexOf(target) < 0 && rnd.nextInt(100) == 0)
             {
-                Snake currentsnake = gameactivity.snakes.get(snakecounter);
-                SnakeBody lastbodysegment = snake.bodysegments.get(snake.bodysegments.size() - 1);
-                for (int bodysegmentcounter = 0; bodysegmentcounter < currentsnake.bodysegments.size(); bodysegmentcounter++)
-                {
-                    SnakeBody currentbodysegment = currentsnake.bodysegments.get(bodysegmentcounter);
-                    if (currentbodysegment != lastbodysegment && snake.detectCollision(currentbodysegment, sensitivity, gameactivity.headsize * 2) && snake.getMoved(turnpoint) > snake.speed * 5)
-                    {
-                        if (snake.direction == Snake.GOING_UP || snake.direction == Snake.GOING_DOWN)
-                        {
-                            if (rnd.nextBoolean())
-                                snake.setDirection(Snake.GOING_LEFT);
-                            else
-                                snake.setDirection(Snake.GOING_RIGHT);
-                        }
-
-                        else
-                        {
-
-                        if (rnd.nextBoolean())
-                            snake.setDirection(Snake.GOING_UP);
-                        else
-                            snake.setDirection(Snake.GOING_DOWN);
-                        }
-                        turnpoint.set(snake.position.x, snake.position.y);
-                    }
-                }
+                turnTo(rnd.nextInt(3), true);
             }
 
 			try
@@ -118,5 +130,78 @@ final class AI implements Runnable
 				Log.e("AI", e.toString());
 			}
 		}
+        gameactivity.AI.remove(this); //remove this dead AI
 	}
+
+    private void turnTo(boolean isVertical)
+    {
+        if (isVertical)
+            if (rnd.nextBoolean())
+                turnTo(Snake.GOING_UP, true);
+            else
+                turnTo(Snake.GOING_DOWN, true);
+        else
+            if (rnd.nextBoolean())
+                turnTo(Snake.GOING_LEFT, true);
+            else
+                turnTo(Snake.GOING_RIGHT, true);
+    }
+
+    private void turnTo(int direction, boolean hasAlternate)
+    {
+        switch (direction)
+        {
+            case Snake.GOING_UP:
+                if (!avoid[Snake.GOING_UP])
+                {
+                    snake.setDirection(Snake.GOING_UP);
+                    turnpoint.set(snake.position.x, snake.position.y);
+                }
+
+                else if (hasAlternate && !avoid[snake.GOING_DOWN]);
+                {
+                    snake.setDirection(Snake.GOING_DOWN);
+                    turnpoint.set(snake.position.x, snake.position.y);
+                }
+                break;
+            case Snake.GOING_DOWN:
+                if (!avoid[Snake.GOING_DOWN])
+                {
+                    snake.setDirection(Snake.GOING_DOWN);
+                    turnpoint.set(snake.position.x, snake.position.y);
+                }
+
+                else if (hasAlternate && !avoid[snake.GOING_UP]);
+                {
+                    snake.setDirection(Snake.GOING_UP);
+                    turnpoint.set(snake.position.x, snake.position.y);
+                }
+                break;
+            case Snake.GOING_LEFT:
+                if (!avoid[Snake.GOING_LEFT])
+                {
+                    snake.setDirection(Snake.GOING_LEFT);
+                    turnpoint.set(snake.position.x, snake.position.y);
+                }
+
+                else if (hasAlternate && !avoid[snake.GOING_RIGHT]);
+                {
+                    snake.setDirection(Snake.GOING_RIGHT);
+                    turnpoint.set(snake.position.x, snake.position.y);
+                }
+                break;
+            case Snake.GOING_RIGHT:
+                if (!avoid[Snake.GOING_RIGHT])
+                {
+                    snake.setDirection(Snake.GOING_RIGHT);
+                    turnpoint.set(snake.position.x, snake.position.y);
+                }
+
+                else if (hasAlternate && !avoid[snake.GOING_LEFT]);
+                {
+                    snake.setDirection(Snake.GOING_LEFT);
+                    turnpoint.set(snake.position.x, snake.position.y);
+                }
+        }
+    }
 }

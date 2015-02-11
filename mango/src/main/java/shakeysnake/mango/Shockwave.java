@@ -11,13 +11,33 @@ final class Shockwave
 	Point position = new Point();
 	int life; // animation index life
 	int type; // shockwave type
-    GameActivity gameActivity;
-    Random rnd = new Random();
 	
 	Shockwave(Point position, int type)
 	{
-		switch (type)
-		{
+        setType(type);
+		this.position.x = position.x;
+		this.position.y = position.y;
+	}
+
+    Shockwave(int x, int y, int type)
+    {
+        setType(type);
+        this.position.x = x;
+        this.position.y = y;
+    }
+
+    Shockwave(GameActivity gameActivity)
+    {
+        Random rnd = new Random();
+        this.type = FOODSPAWN_WAVE;
+        position.set(rnd.nextInt(gameActivity.canvaswidth - (gameActivity.headsize * 2) + gameActivity.headsize), rnd.nextInt(gameActivity.canvasheight - (gameActivity.headsize * 2) + gameActivity.headsize));
+        life = 252;
+    }
+
+    private void setType(int type)
+    {
+        switch (type)
+        {
             case EXTRA_SMALL_WAVE:
                 life = 11;
                 break;
@@ -30,38 +50,15 @@ final class Shockwave
             case LARGE_WAVE:
                 life = 252;
                 break;
-		}
-		this.type = type;
-		this.position.x = position.x;
-		this.position.y = position.y;
-	}
-
-    Shockwave(GameActivity gameActivity)
-    {
-        this.type = FOODSPAWN_WAVE;
-        this.gameActivity = gameActivity;
-        position.set(rnd.nextInt(gameActivity.canvaswidth - (gameActivity.headsize * 2) + gameActivity.headsize), rnd.nextInt(gameActivity.canvasheight - (gameActivity.headsize * 2) + gameActivity.headsize));
-        life = 252;
+        }
+        this.type = type;
     }
-
 
     public int getLife()
     {
-        switch (type)
-        {
-            case EXTRA_SMALL_WAVE:
-            case SMALL_WAVE:
-                return life -= 1;
-            case MEDIUM_WAVE:
-            case LARGE_WAVE:
-                return life -= 4;
-            case FOODSPAWN_WAVE:
-                if (life < 5)
-                    gameActivity.food.add(new Food(gameActivity, position));
-
-                return life -= 4;
-            default:
-                return 0;
-        }
+        if (type == EXTRA_SMALL_WAVE || type == SMALL_WAVE)
+            return life -= 1;
+        else
+            return life -= 4;
     }
 }

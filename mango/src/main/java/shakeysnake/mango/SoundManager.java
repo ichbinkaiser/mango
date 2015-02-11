@@ -12,6 +12,7 @@ import android.util.SparseIntArray;
 
 final class SoundManager
 {
+    final static int POP = 1, LIFE_UP = 2, DING = 3, POPWALL = 4, DOWN = 5, HIT = 6, RESTART = 7, SPAWN = 8;
 	SoundPool soundpool;
 	SparseIntArray sounds;
 	AudioManager  audiomanager;

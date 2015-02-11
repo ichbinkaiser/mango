@@ -8,7 +8,6 @@ final class SnakeBody
 {
 	Point startpoint = new Point(); //start point
 	Point endpoint = new Point(); //end point
-	boolean delete = false; // delete this dead segment
     int direction;
     ArrayList<SnakeBody> bodysegments;
 

@@ -27,11 +27,9 @@ public class GameActivity extends Activity implements SensorEventListener
 	int canvasheight;
 	int canvaswidth;
 	int midpoint; // canvas horizontal midpoint
-	int life = 50;
 	int gamescore = 0;
 	int AIcount = 3;
 	boolean running = true; // game running
-	boolean gameover = false;
 	static String score;
 	int headsize; // snakelist head
 	boolean sologame = true;
@@ -103,7 +101,7 @@ public class GameActivity extends Activity implements SensorEventListener
 		sensormanager.registerListener(this,  orientation, SensorManager.SENSOR_DELAY_FASTEST);
 	}
 
-	private void showScore() // show score screen
+	void showScore() // show score screen
 	{
 		Intent scoreIntent = new Intent(this, ScoreActivity.class);
 		scoreIntent.putExtra(score, Integer.toString(gamescore));
@@ -136,16 +134,11 @@ public class GameActivity extends Activity implements SensorEventListener
 		{
 			while (running)
 			{
-				if ((life < 0) && (!gameover)) // game over condition
-				{
-					running =  false;
-					gameover = true;
-					soundmanager.playSound(7, 1);
-					showScore();
-				}
-
                 if (rnd.nextInt(100) == 0)
                     shockwave.add(new Shockwave(GameActivity.this));
+
+                if (snakes.size() - 1 < AIcount)
+                    snakes.add(new Snake(GameActivity.this));
 				
 				try
 				{
@@ -163,10 +156,8 @@ public class GameActivity extends Activity implements SensorEventListener
 
 	public class MyDraw extends SurfaceView implements Callback
 	{
-		Bitmap back; // background
-
-		String[] extralifestrings = new String[] {"OH YEAH!", "WOHOOO!", "YEAH BABY!", "WOOOT!", "AWESOME!", "COOL!", "GREAT!", "YEAH!!", "WAY TO GO!", "YOU ROCK!"};
-		String[] lostlifestrings = new String[] {"YOU SUCK!", "LOSER!", "GO HOME!", "REALLY?!", "WIMP!", "SUCKER!", "HAHAHA!", "YOU MAD?!", "DIE!", "BOOM!"};
+		String[] yeystrings = new String[] {"OH YEAH!", "WOHOOO!", "YEAH BABY!", "WOOOT!", "AWESOME!", "COOL!", "GREAT!", "YEAH!!", "WAY TO GO!", "YOU ROCK!"};
+		String[] boostrings = new String[] {"YOU SUCK!", "LOSER!", "GO HOME!", "REALLY?!", "WIMP!", "SUCKER!", "HAHAHA!", "YOU MAD?!", "DIE!", "BOOM!"};
 		String[] bumpstrings = new String[] {"BUMP!", "TOINK!", "BOINK!", "BAM!", "WABAM!"};
 		String[] zoomstrings = new String[] {"ZOOM!", "WOOSH!", "SUPER MODE!", "ZOOMBA!", "WARPSPEED!"};
 		Paint foodpaint = new Paint(); // food paint
@@ -175,6 +166,7 @@ public class GameActivity extends Activity implements SensorEventListener
 		Paint scoretext = new Paint();
 		Paint popuptext = new Paint();
 		Paint circlestrokepaint = new Paint();
+        Paint bgpaint = new Paint();
 		GlobalThread globalthread;
 
 		public MyDraw(Context context)
@@ -193,9 +185,6 @@ public class GameActivity extends Activity implements SensorEventListener
 
             downtouch = new Point();
             uptouch = new Point();
-
-			back = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.back), canvaswidth, canvasheight, true);
-			Log.i(getLocalClassName(), "Portrait background created");
 
 			Typeface myType = Typeface.create(Typeface.SANS_SERIF,Typeface.NORMAL);
 			scoretext.setColor(Color.WHITE);
@@ -220,18 +209,14 @@ public class GameActivity extends Activity implements SensorEventListener
 				Log.i(getLocalClassName(), "Screen DPI is not low, adjustment sizes set to normal");
 			}
 
+            bgpaint.setColor(Color.BLACK);
             foodpaint.setColor(Color.WHITE);
             snakepaint.setColor(Color.WHITE);
             snakepaint.setStyle(Paint.Style.STROKE);
             snakepaint.setStrokeWidth(headsize * 2);
 			circlestrokepaint.setStyle(Paint.Style.STROKE);
 
-            snakes.add(new Snake(GameActivity.this));
-
-            for (int snakecounter = 0; snakecounter < AIcount; snakecounter++)
-            {
-                snakes.add(new Snake(GameActivity.this));
-            }
+            snakes.add(new Snake(GameActivity.this)); // Add player
 
 			if (snakes.size() == 1)
 				Log.i(getLocalClassName(), "Snake initialized");
@@ -271,7 +256,7 @@ public class GameActivity extends Activity implements SensorEventListener
                 uptouch.x = (int)event.getX();
                 uptouch.y = (int)event.getY();
 
-                if (Math.abs(downtouch.x - uptouch.x) > (Math.abs(downtouch.y - uptouch.y))) // go with X axis movement
+                if (snakes.size() > 0 && Math.abs(downtouch.x - uptouch.x) > (Math.abs(downtouch.y - uptouch.y))) // go with X axis movement
                 {
                     if (downtouch.x > uptouch.x)
                         snakes.get(0).setDirection(Snake.GOING_LEFT);
@@ -290,7 +275,7 @@ public class GameActivity extends Activity implements SensorEventListener
 		@Override
 		protected void onDraw(Canvas canvas)
 		{
-			canvas.drawBitmap(back, 0, 0, null);
+			canvas.drawRect(0, 0, canvaswidth, canvasheight, bgpaint);
 
             for (int foodcounter = 0; foodcounter < food.size(); foodcounter++)
             {
@@ -300,9 +285,7 @@ public class GameActivity extends Activity implements SensorEventListener
 			for (int snakecounter = 0; snakecounter < snakes.size(); snakecounter++) // snakes drawer
 			{
                 Snake currentsnake = snakes.get(snakecounter);
-				if (currentsnake.dead)
-					snakes.remove(snakecounter);
-				else
+				if (currentsnake.alive)
                 {
                     if (snakecounter == 0)
                     {
@@ -354,13 +337,16 @@ public class GameActivity extends Activity implements SensorEventListener
                             canvas.drawCircle(currentshockwave.position.x, currentshockwave.position.y, 252 - currentshockwavelife, circlestrokepaint);
                             break;
                         case Shockwave.FOODSPAWN_WAVE:
+                            if (currentshockwavelife < 5)
+                                food.add(new Food(GameActivity.this, currentshockwave.position));
+
                             circlestrokepaint.setColor(Color.argb(252 - currentshockwavelife, 255, 255, 255));
                             circlestrokepaint.setStrokeWidth(1);
                             canvas.drawCircle(currentshockwave.position.x, currentshockwave.position.y, currentshockwavelife, circlestrokepaint);
                     }
                 }
                 else
-                    shockwave.remove(shockwavecounter); // remove dead shockwave
+                    shockwave.remove(shockwavecounter); // remove alive shockwave
             }
 
             for (int popupcounter = 0; popupcounter < popup.size(); popupcounter++) // popup text drawer
@@ -371,22 +357,18 @@ public class GameActivity extends Activity implements SensorEventListener
                     popuptext.setColor(Color.argb(popup.get(popupcounter).getCounter(), 255, 255, 255)); // text fade effect
                     switch (popup.get(popupcounter).type)
                     {
-                        case Popup.SCOREUP:
-                            canvas.drawText(extralifestrings[currentpopup.textindex], currentpopup.position.x, currentpopup.position.y - currentpopup.getCounter(), popuptext);
+                        case Popup.BOO:
+                            canvas.drawText(boostrings[currentpopup.textindex], currentpopup.position.x, currentpopup.position.y + currentpopup.getCounter(), popuptext);
                             break;
-                        case Popup.LOSELIFE:
-                            canvas.drawText(lostlifestrings[currentpopup.textindex], currentpopup.position.x, currentpopup.position.y + currentpopup.getCounter(), popuptext);
-                            break;
-                        case Popup.SOLO:
-                            canvas.drawText(extralifestrings[currentpopup.textindex], currentpopup.position.x, currentpopup.position.y + currentpopup.getCounter(), popuptext);
+                        case Popup.YEY:
+                            canvas.drawText(yeystrings[currentpopup.textindex], currentpopup.position.x, currentpopup.position.y + currentpopup.getCounter(), popuptext);
                     }
                 }
                 else
-                    popup.remove(popupcounter); // remove dead popup
+                    popup.remove(popupcounter); // remove alive popup
             }
-			
-			if (life > 0)
-				canvas.drawText("Snake Count: " + Integer.toString(snakes.size()) + " " + "Score: " + Integer.toString(gamescore) + "  " + "Extra Life: " + Integer.toString(life), 10, canvasheight - 10, scoretext);
+
+			canvas.drawText("Score: " + Integer.toString(gamescore), 10, canvasheight - 10, scoretext);
 		}
 	}
 
