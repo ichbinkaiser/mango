@@ -1,4 +1,4 @@
-package shakeysnake.mango;
+package ichbinkaiser.mango;
 
 import android.app.Activity;
 import android.content.Intent;

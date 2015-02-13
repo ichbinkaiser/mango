@@ -1,7 +1,8 @@
-package shakeysnake.mango;
+package ichbinkaiser.mango;
 
 import android.graphics.Point;
 import android.util.Log;
+
 import java.util.Random;
 
 final class Food implements Runnable

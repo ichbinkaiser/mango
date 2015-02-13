@@ -1,11 +1,15 @@
-package shakeysnake.mango;
+package ichbinkaiser.mango;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Paint.Align;
+import android.graphics.Point;
+import android.graphics.Typeface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -15,8 +19,12 @@ import android.os.PowerManager;
 import android.os.Vibrator;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.*;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
+import android.view.SurfaceView;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;

@@ -1,9 +1,10 @@
-package shakeysnake.mango;
+package ichbinkaiser.mango;
 
 import android.graphics.Canvas;
 import android.util.Log;
 import android.view.SurfaceHolder;
-import shakeysnake.mango.GameActivity.MyDraw;
+
+import ichbinkaiser.mango.GameActivity.MyDraw;
 
 final class GameSurfaceThread extends Thread 
 {
