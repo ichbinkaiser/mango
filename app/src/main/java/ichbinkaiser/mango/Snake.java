@@ -14,7 +14,7 @@ final class Snake implements Runnable
     boolean alive = true;
     int spawnwave; // spawn wave animation
     int speed, direction; // speed and direction;
-    int length = 100, currentlength; //snakelist length
+    int length = 100, currentlength; //snakeList length
 
     ArrayList<SnakeBody> bodysegments = new ArrayList<SnakeBody>();
 

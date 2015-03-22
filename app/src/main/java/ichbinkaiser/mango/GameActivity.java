@@ -39,7 +39,7 @@ public class GameActivity extends Activity implements SensorEventListener
 	int AIcount = 3;
 	boolean running = true; // game running
 	static String score;
-	int headsize; // snakelist head
+	int headsize; // snakeList head
 	boolean sologame = true;
 	static SoundManager soundmanager = new SoundManager(); // global sound manager
 	ArrayList<Popup> popup = new ArrayList<Popup>(); // popup messages array list

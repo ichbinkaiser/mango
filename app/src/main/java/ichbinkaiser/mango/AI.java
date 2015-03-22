@@ -8,8 +8,8 @@ import java.util.Random;
 
 final class AI implements Runnable
 {
-	GameActivity gameactivity;
-	ArrayList<Snake> snakelist = new ArrayList<Snake>();
+	GameActivity gameActivity;
+	ArrayList<Snake> snakeList = new ArrayList<>();
 	Food target = null;
     Snake snake;
     Random rnd = new Random();
@@ -17,10 +17,10 @@ final class AI implements Runnable
     Point turnpoint = new Point();
     boolean avoid[] = new boolean[]{false, false, false, false};
 
-	AI(GameActivity gameActivity, ArrayList<Snake> snakelist, Snake snake)
+	AI(GameActivity gameActivity, ArrayList<Snake> snakeList, Snake snake)
 	{
-		this.gameactivity = gameActivity;
-		this.snakelist = snakelist;
+		this.gameActivity = gameActivity;
+		this.snakeList = snakeList;
         this.snake = snake;
         turnpoint.set(snake.position.x, snake.position.y);
         start();
@@ -35,24 +35,23 @@ final class AI implements Runnable
 
 	public void run()
 	{
-		while(gameactivity.running && snake.alive) // AI Thread
+		while(gameActivity.running && snake.alive) // AI Thread
 		{
 
             if (snake.getMoved(turnpoint) > snake.speed)
             {
                 avoid = new boolean[]{false, false, false, false};
-                for (int snakecounter = 0; snakecounter < gameactivity.snakes.size(); snakecounter++)
+                for (Snake currentSnake : gameActivity.snakes)
                 {
-                    Snake currentsnake = gameactivity.snakes.get(snakecounter);
-                    SnakeBody lastbodysegment = snake.bodysegments.get(snake.bodysegments.size() - 1);
-                    for (int bodysegmentcounter = 0; bodysegmentcounter < currentsnake.bodysegments.size(); bodysegmentcounter++)
+                    SnakeBody lastBodySegment = snake.bodysegments.get(snake.bodysegments.size() - 1);
+                    for (int bodySegmentCounter = 0; bodySegmentCounter < currentSnake.bodysegments.size(); bodySegmentCounter++)
                     {
-                        SnakeBody currentbodysegment = currentsnake.bodysegments.get(bodysegmentcounter);
+                        SnakeBody currentBodySegment = currentSnake.bodysegments.get(bodySegmentCounter);
 
-                        for (int directioncounter = 0; directioncounter < 4; directioncounter++)
+                        for (int directionCounter = 0; directionCounter < 4; directionCounter++)
                         {
-                            if (!avoid[directioncounter])
-                                avoid[directioncounter] = currentbodysegment != lastbodysegment && snake.detectCollision(currentbodysegment, sensitivity, gameactivity.headsize * 2, directioncounter);
+                            if (!avoid[directionCounter])
+                                avoid[directionCounter] = currentBodySegment != lastBodySegment && snake.detectCollision(currentBodySegment, sensitivity, gameActivity.headsize * 2, directionCounter);
                         }
                     }
                 }
@@ -77,23 +76,23 @@ final class AI implements Runnable
                         turnTo(true);
             }
 
-            if (snake.getMoved(turnpoint) > snake.speed && gameactivity.food.size() > 0)
+            if (snake.getMoved(turnpoint) > snake.speed && gameActivity.food.size() > 0)
             {
-                int foodpriority = gameactivity.canvasheight + gameactivity.canvaswidth;
+                int foodPriority = gameActivity.canvasheight + gameActivity.canvaswidth;
                 int currentfoodpriority;
-                for (int foodcounter = 0; foodcounter < gameactivity.food.size(); foodcounter++)
+                for (int foodcounter = 0; foodcounter < gameActivity.food.size(); foodcounter++)
                 {
-                    currentfoodpriority = Math.abs(snake.position.x - gameactivity.food.get(foodcounter).position.x) + Math.abs(snake.position.y - gameactivity.food.get(foodcounter).position.y);
-                    if (currentfoodpriority < foodpriority)
+                    currentfoodpriority = Math.abs(snake.position.x - gameActivity.food.get(foodcounter).position.x) + Math.abs(snake.position.y - gameActivity.food.get(foodcounter).position.y);
+                    if (currentfoodpriority < foodPriority)
                     {
-                        foodpriority = currentfoodpriority;
-                        target = gameactivity.food.get(foodcounter);
+                        foodPriority = currentfoodpriority;
+                        target = gameActivity.food.get(foodcounter);
                     }
                 }
 
                 if (snake.direction == Snake.GOING_UP || snake.direction == Snake.GOING_DOWN)
                 {
-                    if (Math.abs(target.position.y - snake.position.y) <= gameactivity.headsize * 2 || (Math.abs(target.position.y - snake.position.y) < gameactivity.canvasheight / 2 && (snake.direction == Snake.GOING_UP && target.position.y > snake.position.y) || (snake.direction == Snake.GOING_DOWN && target.position.y < snake.position.y)))
+                    if (Math.abs(target.position.y - snake.position.y) <= gameActivity.headsize * 2 || (Math.abs(target.position.y - snake.position.y) < gameActivity.canvasheight / 2 && (snake.direction == Snake.GOING_UP && target.position.y > snake.position.y) || (snake.direction == Snake.GOING_DOWN && target.position.y < snake.position.y)))
                     {
                         if (target.position.x < snake.position.x)
                             turnTo(Snake.GOING_LEFT, false);
@@ -104,7 +103,7 @@ final class AI implements Runnable
 
                 else
                 {
-                    if (Math.abs(target.position.x - snake.position.x) <= gameactivity.headsize * 2 || (Math.abs(target.position.x - snake.position.x) < gameactivity.canvaswidth / 2 && (snake.direction == Snake.GOING_LEFT && target.position.x > snake.position.x) || (snake.direction == Snake.GOING_RIGHT && target.position.x < snake.position.x)))
+                    if (Math.abs(target.position.x - snake.position.x) <= gameActivity.headsize * 2 || (Math.abs(target.position.x - snake.position.x) < gameActivity.canvaswidth / 2 && (snake.direction == Snake.GOING_LEFT && target.position.x > snake.position.x) || (snake.direction == Snake.GOING_RIGHT && target.position.x < snake.position.x)))
                     {
                         if (target.position.y > snake.position.y)
                             turnTo(Snake.GOING_DOWN, false);
@@ -114,7 +113,7 @@ final class AI implements Runnable
                 }
             }
 
-            else if (snake.getMoved(turnpoint) > snake.speed && gameactivity.food.indexOf(target) < 0 && rnd.nextInt(100) == 0)
+            else if (snake.getMoved(turnpoint) > snake.speed && gameActivity.food.indexOf(target) < 0 && rnd.nextInt(100) == 0)
             {
                 turnTo(rnd.nextInt(3), true);
             }
@@ -130,7 +129,7 @@ final class AI implements Runnable
 				Log.e("AI", e.toString());
 			}
 		}
-        gameactivity.AI.remove(this); //remove this dead AI
+        gameActivity.AI.remove(this); //remove this dead AI
 	}
 
     private void turnTo(boolean isVertical)
