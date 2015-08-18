@@ -17,7 +17,7 @@ final class SoundManager
 	int soundsloaded = 0;
     int[] soundlibrary = new int[] {R.raw.pop, R.raw.lifeup, R.raw.ding, R.raw.popwall, R.raw.down, R.raw.hit, R.raw.restart, R.raw.spawn};
 
-	public void initSounds(Context context)
+	void initSounds(Context context)
 	{
 		this.context = context;
 		soundpool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
@@ -25,7 +25,7 @@ final class SoundManager
 		audiomanager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 	}
 
-	public void loadSounds() // load sounds to IntArray
+	void loadSounds() // load sounds to IntArray
 	{
 		soundsloaded = 0;
 		soundpool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
@@ -41,14 +41,14 @@ final class SoundManager
 		}
 	}
 
-	public void playSound(int index,float speed)
+	void playSound(int index,float speed)
 	{
         float streamVolume = audiomanager.getStreamVolume(AudioManager.STREAM_MUSIC);
 		streamVolume = streamVolume / audiomanager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 		soundpool.play((Integer) sounds.get(index), streamVolume, streamVolume, 1, 0, speed);
 	}
 
-	public void doCleanup()
+	void doCleanup()
 	{
 		soundpool.release();
 	}
