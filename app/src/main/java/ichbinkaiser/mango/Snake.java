@@ -4,53 +4,62 @@ import android.graphics.Point;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 final class Snake implements Runnable
 {
-    final static int GOING_UP = 0, GOING_RIGHT = 1, GOING_DOWN = 2, GOING_LEFT = 3;
+    enum Direction
+    {
+        UP,
+        RIGHT,
+        DOWN,
+        LEFT
+    }
+
 	GameActivity gameactivity;
 	Point position = new Point();
     boolean alive = true;
-    int spawnwave; // spawn wave animation
-    int speed, direction; // speed and direction;
-    int length = 100, currentlength; //snakeList length
+    int spawnWave; // spawn wave animation
+    int speed; // speed and direction;
+    Direction direction;
+    int length = 100, currentLength; //snakeList length
 
-    ArrayList<SnakeBody> bodysegments = new ArrayList<SnakeBody>();
+    List<SnakeBody> bodySegments = new ArrayList<SnakeBody>();
 
 	Snake(GameActivity gameactivity)
 	{
         Random rnd = new Random();
 		this.gameactivity = gameactivity;
         speed = 5;
-        direction = rnd.nextInt(3);
+        direction = Direction.values()[rnd.nextInt(3)];
 
         switch (direction)
         {
-            case GOING_UP:
-                position.x = rnd.nextInt((gameactivity.canvaswidth / 3) + (gameactivity.canvaswidth / 3));
-                position.y = gameactivity.canvasheight;
+            case UP:
+                position.x = rnd.nextInt((gameactivity.canvasWidth / 3) + (gameactivity.canvasWidth / 3));
+                position.y = gameactivity.canvasHeight;
                 break;
-            case GOING_RIGHT:
+            case RIGHT:
                 position.x = 0;
-                position.y = rnd.nextInt((gameactivity.canvasheight / 3) + (gameactivity.canvasheight / 3));
+                position.y = rnd.nextInt((gameactivity.canvasHeight / 3) + (gameactivity.canvasHeight / 3));
                 break;
-            case GOING_DOWN:
-                position.x = rnd.nextInt((gameactivity.canvaswidth / 3) + (gameactivity.canvaswidth / 3));
+            case DOWN:
+                position.x = rnd.nextInt((gameactivity.canvasWidth / 3) + (gameactivity.canvasWidth / 3));
                 position.y = 0;
                 break;
-            case GOING_LEFT:
-                position.x = gameactivity.canvaswidth;
-                position.y = rnd.nextInt((gameactivity.canvasheight / 3) + (gameactivity.canvasheight / 3));
+            case LEFT:
+                position.x = gameactivity.canvasWidth;
+                position.y = rnd.nextInt((gameactivity.canvasHeight / 3) + (gameactivity.canvasHeight / 3));
                 break;
         }
-        bodysegments.add(new SnakeBody(position, direction, bodysegments));
+        bodySegments.add(new SnakeBody(position, direction, bodySegments));
 		start();
 	}
 
     public int getMoved(Point position)
     {
-        if (direction == GOING_UP || direction == GOING_DOWN)
+        if (direction == Direction.UP || direction == Direction.DOWN)
             return Math.abs(this.position.y - position.y);
         else
             return Math.abs(this.position.x - position.x);
@@ -72,81 +81,81 @@ final class Snake implements Runnable
 		{
             switch (direction)
             {
-                case GOING_UP:
+                case UP:
                     position.y -= speed;
-                    bodysegments.get(bodysegments.size() - 1).startpoint.y = position.y;
+                    bodySegments.get(bodySegments.size() - 1).startPoint.y = position.y;
                     break;
-                case GOING_RIGHT:
+                case RIGHT:
                     position.x += speed;
-                    bodysegments.get(bodysegments.size() - 1).startpoint.x = position.x;
+                    bodySegments.get(bodySegments.size() - 1).startPoint.x = position.x;
                     break;
-                case GOING_DOWN:
+                case DOWN:
                     position.y += speed;
-                    bodysegments.get(bodysegments.size() - 1).startpoint.y = position.y;
+                    bodySegments.get(bodySegments.size() - 1).startPoint.y = position.y;
                     break;
-                case GOING_LEFT:
+                case LEFT:
                     position.x -= speed;
-                    bodysegments.get(bodysegments.size() - 1).startpoint.x = position.x;
+                    bodySegments.get(bodySegments.size() - 1).startPoint.x = position.x;
             }
 
-			if (spawnwave > 0) // spawn_wave animation
+			if (spawnWave > 0) // spawn_wave animation
 			{
-				gameactivity.shockwave.add(new Shockwave(position, 1));
-				spawnwave--;
+				gameactivity.shockWave.add(new Shock_WAVE(position, Shock_WAVE.waveType.EXTRA_SMALL_WAVE));
+				spawnWave--;
 			}
 
 			if (position.x < 0) // head has reached left wall
             {
-                position.x = gameactivity.canvaswidth;
-                bodysegments.add(new SnakeBody(position, direction, bodysegments));
+                position.x = gameactivity.canvasWidth;
+                bodySegments.add(new SnakeBody(position, direction, bodySegments));
             }
 
-            else if (position.x > gameactivity.canvaswidth) // head has reached right wall
+            else if (position.x > gameactivity.canvasWidth) // head has reached right wall
             {
                 position.x = 0;
-                bodysegments.add(new SnakeBody(position, direction, bodysegments));
+                bodySegments.add(new SnakeBody(position, direction, bodySegments));
             }
 
-            else if (position.y > gameactivity.canvasheight) // head has reached bottom wall
+            else if (position.y > gameactivity.canvasHeight) // head has reached bottom wall
             {
                 position.y = 0;
-                bodysegments.add(new SnakeBody(position, direction, bodysegments));
+                bodySegments.add(new SnakeBody(position, direction, bodySegments));
             }
 
             else if (position.y < 0)
             {
-                position.y = gameactivity.canvasheight;
-                bodysegments.add(new SnakeBody(position, direction, bodysegments));
+                position.y = gameactivity.canvasHeight;
+                bodySegments.add(new SnakeBody(position, direction, bodySegments));
             }
 
-            currentlength = 0;
-            for (int bodysegmentscounter = 0; bodysegmentscounter < bodysegments.size(); bodysegmentscounter++)
+            currentLength = 0;
+            for (int bodysegmentscounter = 0; bodysegmentscounter < bodySegments.size(); bodysegmentscounter++)
             {
-                currentlength += bodysegments.get(bodysegmentscounter).getLength();
+                currentLength += bodySegments.get(bodysegmentscounter).getLength();
             }
 
-            if (currentlength > length)
-                bodysegments.get(0).trim(currentlength - length);
+            if (currentLength > length)
+                bodySegments.get(0).trim(currentLength - length);
 
             for (int snakecounter = 0; snakecounter < gameactivity.snakes.size(); snakecounter++)
             {
                 Snake currentsnake = gameactivity.snakes.get(snakecounter);
-                SnakeBody lastbodysegment = bodysegments.get(bodysegments.size() - 1);
-                for (int bodysegmentcounter = 0; bodysegmentcounter < currentsnake.bodysegments.size(); bodysegmentcounter++)
+                SnakeBody lastbodysegment = bodySegments.get(bodySegments.size() - 1);
+                for (int bodysegmentcounter = 0; bodysegmentcounter < currentsnake.bodySegments.size(); bodysegmentcounter++)
                 {
-                    SnakeBody currentbodysegment = currentsnake.bodysegments.get(bodysegmentcounter);
-                    if (currentbodysegment != lastbodysegment && detectCollision(currentbodysegment, gameactivity.headsize, gameactivity.headsize))
+                    SnakeBody currentbodysegment = currentsnake.bodySegments.get(bodysegmentcounter);
+                    if (currentbodysegment != lastbodysegment && detectCollision(currentbodysegment, gameactivity.headSize, gameactivity.headSize))
                     {
                         gameactivity.doShake(100);
                         if (gameactivity.snakes.get(0) != this) // check if this is the human player
                         {
-                            gameactivity.popup.add(new Popup(position, Popup.BOO));
+                            gameactivity.popup.add(new Popup(position, Popup.popupType.BOO));
                             dieAnimation();
                         }
                         else
                         {
                             gameactivity.running =  false;
-                            gameactivity.soundmanager.playSound(SoundManager.RESTART, 1);
+                            GameActivity.soundmanager.playSound(SoundManager.soundType.RESTART, 1);
                             gameactivity.showScore();
                         }
                         break;
@@ -154,20 +163,20 @@ final class Snake implements Runnable
                 }
             }
 
-            for (int foodcounter = 0; foodcounter < gameactivity.food.size(); foodcounter++)
+            for (int foodCounter = 0; foodCounter < gameactivity.food.size(); foodCounter++)
             {
-                Food currentfood = gameactivity.food.get(foodcounter);
-                if (Math.abs(position.x - currentfood.position.x) <= gameactivity.headsize * 2 && Math.abs(position.y - currentfood.position.y) <= gameactivity.headsize * 2)
+                Food currentFood = gameactivity.food.get(foodCounter);
+                if (Math.abs(position.x - currentFood.position.x) <= gameactivity.headSize * 2 && Math.abs(position.y - currentFood.position.y) <= gameactivity.headSize * 2)
                 {
-                    gameactivity.food.get(foodcounter).eat();
+                    gameactivity.food.get(foodCounter).eat();
                     gameactivity.doShake(50);
                     length += 2;
 
-                    gameactivity.popup.add(new Popup(position, Popup.YEY));
+                    gameactivity.popup.add(new Popup(position, Popup.popupType.YEY));
 
                     if (this == gameactivity.snakes.get(0))
                     {
-                        gameactivity.gamescore += 2;
+                        gameactivity.gameScore += 2;
                     }
                 }
             }
@@ -186,100 +195,100 @@ final class Snake implements Runnable
         gameactivity.snakes.remove(this); // remove this dead snake
 	}
 
-    public void setDirection(int direction)
+    public void setDirection(Direction direction)
     {
-        if ((this.direction == GOING_LEFT || this.direction == GOING_RIGHT) && (direction == GOING_UP || direction == GOING_DOWN))
+        if ((this.direction == Direction.LEFT || this.direction == Direction.RIGHT) && (direction == Direction.UP || direction == Direction.DOWN))
         {
             this.direction = direction;
-            bodysegments.add(new SnakeBody(position, direction, bodysegments));
+            bodySegments.add(new SnakeBody(position, direction, bodySegments));
         }
-        else if ((this.direction == GOING_DOWN || this.direction == GOING_UP) && (direction == GOING_LEFT || direction == GOING_RIGHT))
+        else if ((this.direction == Direction.DOWN || this.direction == Direction.UP) && (direction == Direction.LEFT || direction == Direction.RIGHT))
         {
             this.direction = direction;
-            bodysegments.add(new SnakeBody(position, direction, bodysegments));
+            bodySegments.add(new SnakeBody(position, direction, bodySegments));
         }
     }
 
-    public boolean detectCollision(SnakeBody bodysegment, int sensitivity, int crossection)
+    public boolean detectCollision(SnakeBody bodySegment, int sensitivity, int crossSection)
     {
-        return collisionDetection(bodysegment, sensitivity, crossection, direction);
+        return collisionDetection(bodySegment, sensitivity, crossSection, direction);
     }
 
-    public boolean detectCollision(SnakeBody bodysegment, int sensitivity, int crossection, int direction)
+    public boolean detectCollision(SnakeBody bodySegment, int sensitivity, int crossSection, Direction direction)
     {
-        return collisionDetection(bodysegment, sensitivity, crossection, direction);
+        return collisionDetection(bodySegment, sensitivity, crossSection, direction);
     }
 
-    private boolean collisionDetection(SnakeBody bodysegment, int sensitivity, int crossection, int direction) // relative to current snake direction
+    private boolean collisionDetection(SnakeBody bodySegment, int sensitivity, int crossSection, Direction direction) // relative to current snake direction
     {
         switch (direction)
         {
-            case GOING_UP:
-                if (bodysegment.direction == GOING_UP || bodysegment.direction == GOING_DOWN)
-                    return collinearCheck(bodysegment, sensitivity, crossection, direction);
+            case UP:
+                if (bodySegment.direction == Direction.UP || bodySegment.direction == Direction.DOWN)
+                    return collinearCheck(bodySegment, sensitivity, crossSection, direction);
                 else
-                    return parallelCheck(bodysegment) && position.y < bodysegment.startpoint.y + sensitivity && position.y > bodysegment.startpoint.y;
-            case GOING_DOWN:
-                if (bodysegment.direction == GOING_UP || bodysegment.direction == GOING_DOWN)
-                    return collinearCheck(bodysegment, sensitivity, crossection, direction);
+                    return parallelCheck(bodySegment) && position.y < bodySegment.startPoint.y + sensitivity && position.y > bodySegment.startPoint.y;
+            case DOWN:
+                if (bodySegment.direction == Direction.UP || bodySegment.direction == Direction.DOWN)
+                    return collinearCheck(bodySegment, sensitivity, crossSection, direction);
                 else
-                    return parallelCheck(bodysegment) && position.y > bodysegment.startpoint.y - sensitivity && position.y < bodysegment.startpoint.y;
-            case Snake.GOING_LEFT:
-                if (bodysegment.direction == GOING_LEFT || bodysegment.direction == GOING_RIGHT)
-                    return collinearCheck(bodysegment, sensitivity, crossection, direction);
+                    return parallelCheck(bodySegment) && position.y > bodySegment.startPoint.y - sensitivity && position.y < bodySegment.startPoint.y;
+            case LEFT:
+                if (bodySegment.direction == Direction.LEFT || bodySegment.direction == Direction.RIGHT)
+                    return collinearCheck(bodySegment, sensitivity, crossSection, direction);
                 else
-                    return parallelCheck(bodysegment) && position.x < bodysegment.startpoint.x + sensitivity && position.x > bodysegment.startpoint.x;
-            case Snake.GOING_RIGHT:
-                if (bodysegment.direction == GOING_LEFT || bodysegment.direction == GOING_RIGHT)
-                    return collinearCheck(bodysegment, sensitivity, crossection, direction);
+                    return parallelCheck(bodySegment) && position.x < bodySegment.startPoint.x + sensitivity && position.x > bodySegment.startPoint.x;
+            case RIGHT:
+                if (bodySegment.direction == Direction.LEFT || bodySegment.direction == Direction.RIGHT)
+                    return collinearCheck(bodySegment, sensitivity, crossSection, direction);
                 else
-                    return parallelCheck(bodysegment) && position.x > bodysegment.startpoint.x - sensitivity && position.x < bodysegment.startpoint.x;
+                    return parallelCheck(bodySegment) && position.x > bodySegment.startPoint.x - sensitivity && position.x < bodySegment.startPoint.x;
             default:
                 return false;
         }
     }
 
-    private boolean parallelCheck(SnakeBody bodysegment)
+    private boolean parallelCheck(SnakeBody bodySegment)
     {
-        switch (bodysegment.direction)
+        switch (bodySegment.direction)
         {
-            case GOING_UP:
-                return position.y >= bodysegment.startpoint.y && position.y <= bodysegment.endpoint.y;
-            case GOING_DOWN:
-                return position.y <= bodysegment.startpoint.y && position.y >= bodysegment.endpoint.y;
-            case GOING_LEFT:
-                return position.x >= bodysegment.startpoint.x && position.x <= bodysegment.endpoint.x;
-            case GOING_RIGHT:
-                return position.x <= bodysegment.startpoint.x && position.x >= bodysegment.endpoint.x;
+            case UP:
+                return position.y >= bodySegment.startPoint.y && position.y <= bodySegment.endpoint.y;
+            case DOWN:
+                return position.y <= bodySegment.startPoint.y && position.y >= bodySegment.endpoint.y;
+            case LEFT:
+                return position.x >= bodySegment.startPoint.x && position.x <= bodySegment.endpoint.x;
+            case RIGHT:
+                return position.x <= bodySegment.startPoint.x && position.x >= bodySegment.endpoint.x;
             default:
                 return false;
         }
     }
 
-    private boolean collinearCheck(SnakeBody bodysegment, int sensitivity, int width, int direction)
+    private boolean collinearCheck(SnakeBody bodySegment, int sensitivity, int width, Direction direction)
     {
-        switch (bodysegment.direction)
+        switch (bodySegment.direction)
         {
-            case GOING_UP:
-                if (direction == GOING_UP)
-                    return Math.abs(bodysegment.startpoint.x - position.x) <= width && position.y <= bodysegment.endpoint.y + sensitivity && position.y >= bodysegment.startpoint.y;
+            case UP:
+                if (direction == Direction.UP)
+                    return Math.abs(bodySegment.startPoint.x - position.x) <= width && position.y <= bodySegment.endpoint.y + sensitivity && position.y >= bodySegment.startPoint.y;
                 else
-                    return Math.abs(bodysegment.startpoint.x - position.x) <= width && position.y >= bodysegment.startpoint.y - sensitivity && position.y <= bodysegment.endpoint.y;
-            case GOING_DOWN:
-                if (direction == GOING_UP)
-                    return Math.abs(bodysegment.startpoint.x - position.x) <= width && position.y <= bodysegment.startpoint.y + sensitivity && position.y >= bodysegment.endpoint.y;
+                    return Math.abs(bodySegment.startPoint.x - position.x) <= width && position.y >= bodySegment.startPoint.y - sensitivity && position.y <= bodySegment.endpoint.y;
+            case DOWN:
+                if (direction == Direction.UP)
+                    return Math.abs(bodySegment.startPoint.x - position.x) <= width && position.y <= bodySegment.startPoint.y + sensitivity && position.y >= bodySegment.endpoint.y;
                 else
-                    return Math.abs(bodysegment.startpoint.x - position.x) <= width && position.y >= bodysegment.endpoint.y - sensitivity && position.y <= bodysegment.startpoint.y;
-            case GOING_LEFT:
-                if (direction == GOING_LEFT)
-                    return Math.abs(bodysegment.startpoint.y - position.y) <= width && position.x <= bodysegment.endpoint.x + sensitivity && position.x >= bodysegment.startpoint.x;
+                    return Math.abs(bodySegment.startPoint.x - position.x) <= width && position.y >= bodySegment.endpoint.y - sensitivity && position.y <= bodySegment.startPoint.y;
+            case LEFT:
+                if (direction == Direction.LEFT)
+                    return Math.abs(bodySegment.startPoint.y - position.y) <= width && position.x <= bodySegment.endpoint.x + sensitivity && position.x >= bodySegment.startPoint.x;
                 else
-                    return Math.abs(bodysegment.startpoint.y - position.y) <= width && position.x >= bodysegment.startpoint.x - sensitivity && position.x <= bodysegment.endpoint.x;
-            case GOING_RIGHT:
-                if (direction == GOING_LEFT)
-                    return Math.abs(bodysegment.startpoint.y - position.y) <= width && position.x <= bodysegment.startpoint.x + sensitivity && position.x >= bodysegment.endpoint.x;
+                    return Math.abs(bodySegment.startPoint.y - position.y) <= width && position.x >= bodySegment.startPoint.x - sensitivity && position.x <= bodySegment.endpoint.x;
+            case RIGHT:
+                if (direction == Direction.LEFT)
+                    return Math.abs(bodySegment.startPoint.y - position.y) <= width && position.x <= bodySegment.startPoint.x + sensitivity && position.x >= bodySegment.endpoint.x;
                 else
-                    return Math.abs(bodysegment.startpoint.y - position.y) <= width && position.x >= bodysegment.endpoint.x - sensitivity && position.x <= bodysegment.startpoint.x;
+                    return Math.abs(bodySegment.startPoint.y - position.y) <= width && position.x >= bodySegment.endpoint.x - sensitivity && position.x <= bodySegment.startPoint.x;
             default:
                 return false;
         }
@@ -287,36 +296,36 @@ final class Snake implements Runnable
 
     private void dieAnimation()
     {
-        gameactivity.popup.add(new Popup(position, Popup.BUMP));
-        for (int bodysegmentcounter = 0; bodysegmentcounter < bodysegments.size(); bodysegmentcounter++)
+        gameactivity.popup.add(new Popup(position, Popup.popupType.BUMP));
+        for (int bodySegmentCounter = 0; bodySegmentCounter < bodySegments.size(); bodySegmentCounter++)
         {
-            SnakeBody currentbodysegment = bodysegments.get(bodysegmentcounter);
-            gameactivity.shockwave.add(new Shockwave(currentbodysegment.startpoint, Shockwave.LARGE_WAVE));
-            switch (bodysegments.get(bodysegmentcounter).direction)
+            SnakeBody currentBodySegment = bodySegments.get(bodySegmentCounter);
+            gameactivity.shockWave.add(new Shock_WAVE(currentBodySegment.startPoint, Shock_WAVE.waveType.LARGE_WAVE));
+            switch (bodySegments.get(bodySegmentCounter).direction)
             {
-                case Snake.GOING_DOWN:
-                    for (int counter = currentbodysegment.startpoint.y; counter > currentbodysegment.endpoint.y; counter--)
+                case DOWN:
+                    for (int counter = currentBodySegment.startPoint.y; counter > currentBodySegment.endpoint.y; counter--)
                     {
                         if (counter % 5 == 0)
-                            gameactivity.shockwave.add(new Shockwave(currentbodysegment.startpoint.x, counter, Shockwave.SMALL_WAVE));
+                            gameactivity.shockWave.add(new Shock_WAVE(currentBodySegment.startPoint.x, counter));
                     }
-                case Snake.GOING_UP:
-                    for (int counter = currentbodysegment.startpoint.y; counter < currentbodysegment.endpoint.y; counter++)
+                case UP:
+                    for (int counter = currentBodySegment.startPoint.y; counter < currentBodySegment.endpoint.y; counter++)
                     {
                         if (counter % 5 == 0)
-                            gameactivity.shockwave.add(new Shockwave(currentbodysegment.startpoint.x, counter, Shockwave.SMALL_WAVE));
+                            gameactivity.shockWave.add(new Shock_WAVE(currentBodySegment.startPoint.x, counter));
                     }
-                case Snake.GOING_LEFT:
-                    for (int counter = currentbodysegment.startpoint.x; counter > currentbodysegment.endpoint.x; counter--)
+                case LEFT:
+                    for (int counter = currentBodySegment.startPoint.x; counter > currentBodySegment.endpoint.x; counter--)
                     {
                         if (counter % 5 == 0)
-                            gameactivity.shockwave.add(new Shockwave(counter, currentbodysegment.endpoint.y, Shockwave.SMALL_WAVE));
+                            gameactivity.shockWave.add(new Shock_WAVE(counter, currentBodySegment.endpoint.y));
                     }
-                case Snake.GOING_RIGHT:
-                    for (int counter = currentbodysegment.startpoint.x; counter < currentbodysegment.endpoint.x; counter++)
+                case RIGHT:
+                    for (int counter = currentBodySegment.startPoint.x; counter < currentBodySegment.endpoint.x; counter++)
                     {
                         if (counter % 5 == 0)
-                            gameactivity.shockwave.add(new Shockwave(counter, currentbodysegment.endpoint.y, Shockwave.SMALL_WAVE));
+                            gameactivity.shockWave.add(new Shock_WAVE(counter, currentBodySegment.endpoint.y));
                     }
             }
         }

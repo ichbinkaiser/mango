@@ -42,7 +42,7 @@ final class Food implements Runnable
 
         if (exists)
         {
-            gameActivity.shockwave.add(new Shockwave(position, Shockwave.SMALL_WAVE));
+            gameActivity.shockWave.add(new Shock_WAVE(position, Shock_WAVE.waveType.SMALL_WAVE));
             gameActivity.food.remove(this);
         }
     }

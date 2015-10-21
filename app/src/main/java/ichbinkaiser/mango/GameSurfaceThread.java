@@ -4,43 +4,43 @@ import android.graphics.Canvas;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
-import ichbinkaiser.mango.GameActivity.MyDraw;
+import ichbinkaiser.mango.GameActivity.GameScreen;
 
-final class GameSurfaceThread extends Thread 
+final class GameSurfaceThread extends Thread
 {
-	GameActivity gameactivity;
-	SurfaceHolder myholder;
-	MyDraw mydraw;
+	GameActivity gameActivity;
+	SurfaceHolder surfaceHolder;
+	GameScreen gameScreen;
 	
-	public GameSurfaceThread(GameActivity gameactivity, SurfaceHolder holder , MyDraw drawmain)
+	public GameSurfaceThread(GameActivity gameActivity, SurfaceHolder holder , GameScreen drawMain)
 	{
-		this.gameactivity = gameactivity;
+		this.gameActivity = gameActivity;
 		setName("SurfaceView");
-		myholder = holder;
-		mydraw = drawmain;
+		surfaceHolder = holder;
+		gameScreen = drawMain;
         start();
 	}
 
 	public void run()
 	{
 		Canvas canvas = null;
-		while(gameactivity.running)
+		while(gameActivity.running)
 		{
 			try
 			{
-				canvas = myholder.lockCanvas(null);
-				mydraw.onDraw(canvas);
+				canvas = surfaceHolder.lockCanvas(null);
+				gameScreen.screenDraw(canvas);
 			}
 
 			catch (NullPointerException e)
 			{
-				Log.e(this.gameactivity.getLocalClassName(), e.toString());
+				Log.e(this.gameActivity.getLocalClassName(), e.toString());
 			}
 
 			finally
 			{
 				if(canvas != null)
-					myholder.unlockCanvasAndPost(canvas);
+					surfaceHolder.unlockCanvasAndPost(canvas);
 			}
 		}
 	}

@@ -4,36 +4,44 @@ import android.graphics.Point;
 
 import java.util.Random;
 
-final class Shockwave 
+final class Shock_WAVE
 {
-    final static int EXTRA_SMALL_WAVE = 0, SMALL_WAVE = 1, MEDIUM_WAVE = 2, LARGE_WAVE = 3, FOODSPAWN_WAVE = 4;
+    enum waveType
+    {
+	    EXTRA_SMALL_WAVE,
+	    SMALL_WAVE,
+	    MEDIUM_WAVE,
+	    LARGE_WAVE,
+	    FOOD_SPAWN_WAVE
+    }
+
 	Point position = new Point();
 	int life; // animation index life
-	int type; // shockwave type
+	waveType type; // shockWave type
 	
-	Shockwave(Point position, int type)
+	Shock_WAVE(Point position, waveType type)
 	{
         setType(type);
 		this.position.x = position.x;
 		this.position.y = position.y;
 	}
 
-    Shockwave(int x, int y, int type)
+    Shock_WAVE(int x, int y)
     {
-        setType(type);
+        setType(waveType.SMALL_WAVE);
         this.position.x = x;
         this.position.y = y;
     }
 
-    Shockwave(GameActivity gameActivity)
+    Shock_WAVE(GameActivity gameActivity)
     {
         Random rnd = new Random();
-        this.type = FOODSPAWN_WAVE;
-        position.set(rnd.nextInt(gameActivity.canvaswidth - (gameActivity.headsize * 2) + gameActivity.headsize), rnd.nextInt(gameActivity.canvasheight - (gameActivity.headsize * 2) + gameActivity.headsize));
+        this.type = waveType.FOOD_SPAWN_WAVE;
+        position.set(rnd.nextInt(gameActivity.canvasWidth - (gameActivity.headSize * 2) + gameActivity.headSize), rnd.nextInt(gameActivity.canvasHeight - (gameActivity.headSize * 2) + gameActivity.headSize));
         life = 252;
     }
 
-    private void setType(int type)
+    private void setType(waveType type)
     {
         switch (type)
         {
@@ -55,7 +63,7 @@ final class Shockwave
 
     public int getLife()
     {
-        if (type == EXTRA_SMALL_WAVE || type == SMALL_WAVE)
+        if (type == waveType.EXTRA_SMALL_WAVE || type == waveType.SMALL_WAVE)
             return life -= 1;
         else
             return life -= 4;

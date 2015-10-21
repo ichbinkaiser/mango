@@ -9,7 +9,18 @@ import android.util.SparseIntArray;
 
 final class SoundManager
 {
-    final static int POP = 1, LIFE_UP = 2, DING = 3, POPWALL = 4, DOWN = 5, HIT = 6, RESTART = 7, SPAWN = 8;
+	enum soundType
+	{
+		POP,
+		LIFE_UP,
+		DING,
+		POPWALL,
+		DOWN,
+		HIT,
+		RESTART,
+		SPAWN
+	}
+
 	SoundPool soundpool;
 	SparseIntArray sounds;
 	AudioManager  audiomanager;
@@ -41,11 +52,11 @@ final class SoundManager
 		}
 	}
 
-	void playSound(int index,float speed)
+	void playSound(soundType sound, float speed)
 	{
         float streamVolume = audiomanager.getStreamVolume(AudioManager.STREAM_MUSIC);
 		streamVolume = streamVolume / audiomanager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-		soundpool.play((Integer) sounds.get(index), streamVolume, streamVolume, 1, 0, speed);
+		soundpool.play(sounds.get(sound.ordinal()), streamVolume, streamVolume, 1, 0, speed);
 	}
 
 	void doCleanup()

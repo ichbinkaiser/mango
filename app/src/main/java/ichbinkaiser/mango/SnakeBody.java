@@ -2,57 +2,57 @@ package ichbinkaiser.mango;
 
 import android.graphics.Point;
 
-import java.util.ArrayList;
+import java.util.List;
 
 final class SnakeBody
 {
-	Point startpoint = new Point(); //start point
+	Point startPoint = new Point(); //start point
 	Point endpoint = new Point(); //end point
-    int direction;
-    ArrayList<SnakeBody> bodysegments;
+    Snake.Direction direction;
+    List<SnakeBody> bodySegments;
 
-	SnakeBody(Point startpoint, int direction, ArrayList<SnakeBody> bodysegment)
+	SnakeBody(Point startPoint, Snake.Direction direction, List<SnakeBody> bodySegment)
 	{
-		this.startpoint.x = startpoint.x;
-		this.startpoint.y = startpoint.y;
-		this.endpoint.x = startpoint.x;
-		this.endpoint.y = startpoint.y;
+		this.startPoint.x = startPoint.x;
+		this.startPoint.y = startPoint.y;
+		this.endpoint.x = startPoint.x;
+		this.endpoint.y = startPoint.y;
         this.direction = direction;
-        this.bodysegments = bodysegment;
+        this.bodySegments = bodySegment;
 	}
 
     public void trim(int length)
     {
         switch (direction)
         {
-            case Snake.GOING_UP:
+            case UP:
                 endpoint.y -= length;
                 break;
-            case Snake.GOING_DOWN:
+            case DOWN:
                 endpoint.y += length;
                 break;
-            case Snake.GOING_LEFT:
+            case LEFT:
                 endpoint.x -= length;
                 break;
-            case Snake.GOING_RIGHT:
+            case RIGHT:
                 endpoint.x += length;
         }
         if (getLength() < 0)
-            bodysegments.remove(this);
+            bodySegments.remove(this);
     }
 
     public int getLength()
     {
         switch (direction)
         {
-            case Snake.GOING_UP:
-                return endpoint.y - startpoint.y;
-            case Snake.GOING_DOWN:
-                return startpoint.y - endpoint.y;
-            case Snake.GOING_LEFT:
-                return endpoint.x - startpoint.x;
-            case Snake.GOING_RIGHT:
-                return startpoint.x - endpoint.x;
+            case UP:
+                return endpoint.y - startPoint.y;
+            case DOWN:
+                return startPoint.y - endpoint.y;
+            case LEFT:
+                return endpoint.x - startPoint.x;
+            case RIGHT:
+                return startPoint.x - endpoint.x;
             default:
                 return 0;
         }
