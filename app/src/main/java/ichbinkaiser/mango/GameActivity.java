@@ -44,7 +44,7 @@ public class GameActivity extends Activity implements SensorEventListener
 	boolean soloGame = true;
 	static SoundManager soundmanager = new SoundManager(); // global sound manager
 	List<Popup> popup = new CopyOnWriteArrayList<>(); // popup messages array list
-	List<Shock_WAVE> shockWave = new CopyOnWriteArrayList<>(); // shockwave animation list
+	List<ShockWave> shockWave = new CopyOnWriteArrayList<>(); // shockwave animation list
 	List<Snake> snakes = new CopyOnWriteArrayList<>(); // snakes list
 	List<Food> food = new CopyOnWriteArrayList<>(); // food list
 	List<AI> AI = new CopyOnWriteArrayList<>(); // snakes list
@@ -145,7 +145,7 @@ public class GameActivity extends Activity implements SensorEventListener
 			while (running)
 			{
                 if (rnd.nextInt(100) == 0)
-                    shockWave.add(new Shock_WAVE(GameActivity.this));
+                    shockWave.add(new ShockWave(GameActivity.this));
 
                 if (snakes.size() - 1 < AICount)
                     snakes.add(new Snake(GameActivity.this));
@@ -319,7 +319,7 @@ public class GameActivity extends Activity implements SensorEventListener
 
             for (int shockWaveCounter = 0; shockWaveCounter < shockWave.size(); shockWaveCounter++)  // shockwave drawer
             {
-                Shock_WAVE currentShockWave = shockWave.get(shockWaveCounter);
+                ShockWave currentShockWave = shockWave.get(shockWaveCounter);
                 if (currentShockWave.getLife() > 0) // bump animation
                 {
                     int currentShockWaveLife = currentShockWave.getLife();

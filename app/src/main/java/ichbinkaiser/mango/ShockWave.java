@@ -4,7 +4,7 @@ import android.graphics.Point;
 
 import java.util.Random;
 
-final class Shock_WAVE
+final class ShockWave
 {
     enum waveType
     {
@@ -19,21 +19,21 @@ final class Shock_WAVE
 	int life; // animation index life
 	waveType type; // shockWave type
 	
-	Shock_WAVE(Point position, waveType type)
+	ShockWave(Point position, waveType type)
 	{
         setType(type);
 		this.position.x = position.x;
 		this.position.y = position.y;
 	}
 
-    Shock_WAVE(int x, int y)
+    ShockWave(int x, int y)
     {
         setType(waveType.SMALL_WAVE);
         this.position.x = x;
         this.position.y = y;
     }
 
-    Shock_WAVE(GameActivity gameActivity)
+    ShockWave(GameActivity gameActivity)
     {
         Random rnd = new Random();
         this.type = waveType.FOOD_SPAWN_WAVE;

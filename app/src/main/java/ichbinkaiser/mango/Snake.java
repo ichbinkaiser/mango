@@ -100,7 +100,7 @@ final class Snake implements Runnable
 
 			if (spawnWave > 0) // spawn_wave animation
 			{
-				gameactivity.shockWave.add(new Shock_WAVE(position, Shock_WAVE.waveType.EXTRA_SMALL_WAVE));
+				gameactivity.shockWave.add(new ShockWave(position, ShockWave.waveType.EXTRA_SMALL_WAVE));
 				spawnWave--;
 			}
 
@@ -300,32 +300,32 @@ final class Snake implements Runnable
         for (int bodySegmentCounter = 0; bodySegmentCounter < bodySegments.size(); bodySegmentCounter++)
         {
             SnakeBody currentBodySegment = bodySegments.get(bodySegmentCounter);
-            gameactivity.shockWave.add(new Shock_WAVE(currentBodySegment.startPoint, Shock_WAVE.waveType.LARGE_WAVE));
+            gameactivity.shockWave.add(new ShockWave(currentBodySegment.startPoint, ShockWave.waveType.LARGE_WAVE));
             switch (bodySegments.get(bodySegmentCounter).direction)
             {
                 case DOWN:
                     for (int counter = currentBodySegment.startPoint.y; counter > currentBodySegment.endpoint.y; counter--)
                     {
                         if (counter % 5 == 0)
-                            gameactivity.shockWave.add(new Shock_WAVE(currentBodySegment.startPoint.x, counter));
+                            gameactivity.shockWave.add(new ShockWave(currentBodySegment.startPoint.x, counter));
                     }
                 case UP:
                     for (int counter = currentBodySegment.startPoint.y; counter < currentBodySegment.endpoint.y; counter++)
                     {
                         if (counter % 5 == 0)
-                            gameactivity.shockWave.add(new Shock_WAVE(currentBodySegment.startPoint.x, counter));
+                            gameactivity.shockWave.add(new ShockWave(currentBodySegment.startPoint.x, counter));
                     }
                 case LEFT:
                     for (int counter = currentBodySegment.startPoint.x; counter > currentBodySegment.endpoint.x; counter--)
                     {
                         if (counter % 5 == 0)
-                            gameactivity.shockWave.add(new Shock_WAVE(counter, currentBodySegment.endpoint.y));
+                            gameactivity.shockWave.add(new ShockWave(counter, currentBodySegment.endpoint.y));
                     }
                 case RIGHT:
                     for (int counter = currentBodySegment.startPoint.x; counter < currentBodySegment.endpoint.x; counter++)
                     {
                         if (counter % 5 == 0)
-                            gameactivity.shockWave.add(new Shock_WAVE(counter, currentBodySegment.endpoint.y));
+                            gameactivity.shockWave.add(new ShockWave(counter, currentBodySegment.endpoint.y));
                     }
             }
         }
