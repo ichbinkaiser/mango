@@ -3,9 +3,9 @@ package ichbinkaiser.mango;
 import android.graphics.Point;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 final class Snake implements Runnable
 {
@@ -25,7 +25,7 @@ final class Snake implements Runnable
     Direction direction;
     int length = 100, currentLength; //snakeList length
 
-    List<SnakeBody> bodySegments = new ArrayList<SnakeBody>();
+    List<SnakeBody> bodySegments = new CopyOnWriteArrayList<>();
 
 	Snake(GameActivity gameactivity)
 	{
@@ -129,9 +129,9 @@ final class Snake implements Runnable
             }
 
             currentLength = 0;
-            for (int bodysegmentscounter = 0; bodysegmentscounter < bodySegments.size(); bodysegmentscounter++)
+            for (SnakeBody currentBodySegment : bodySegments)
             {
-                currentLength += bodySegments.get(bodysegmentscounter).getLength();
+                currentLength += currentBodySegment.getLength();
             }
 
             if (currentLength > length)
@@ -208,6 +208,13 @@ final class Snake implements Runnable
         }
     }
 
+    /**
+     *
+     * @param bodySegment
+     * @param sensitivity
+     * @param crossSection
+     * @return
+     */
     public boolean detectCollision(SnakeBody bodySegment, int sensitivity, int crossSection)
     {
         return collisionDetection(bodySegment, sensitivity, crossSection, direction);

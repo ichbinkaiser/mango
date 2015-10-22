@@ -166,18 +166,18 @@ public class GameActivity extends Activity implements SensorEventListener
 
 	public class GameScreen extends SurfaceView implements Callback
 	{
-		String[] yeystrings = new String[] {"OH YEAH!", "WOHOOO!", "YEAH BABY!", "WOOOT!", "AWESOME!", "COOL!", "GREAT!", "YEAH!!", "WAY TO GO!", "YOU ROCK!"};
-		String[] boostrings = new String[] {"YOU SUCK!", "LOSER!", "GO HOME!", "REALLY?!", "WIMP!", "SUCKER!", "HAHAHA!", "YOU MAD?!", "DIE!", "BOOM!"};
-		String[] bumpstrings = new String[] {"BUMP!", "TOINK!", "BOINK!", "BAM!", "WABAM!"};
-		String[] zoomstrings = new String[] {"ZOOM!", "WOOSH!", "SUPER MODE!", "ZOOMBA!", "WARPSPEED!"};
-		Paint foodpaint = new Paint(); // food paint
-        Paint snakejointpaint = new Paint();
-        Paint snakepaint = new Paint();
-		Paint scoretext = new Paint();
-		Paint popuptext = new Paint();
-		Paint circlestrokepaint = new Paint();
-        Paint bgpaint = new Paint();
-		GlobalThread globalthread;
+		String[] yeyStrings = new String[] {"OH YEAH!", "WOHOOO!", "YEAH BABY!", "WOOOT!", "AWESOME!", "COOL!", "GREAT!", "YEAH!!", "WAY TO GO!", "YOU ROCK!"};
+		String[] booStrings = new String[] {"YOU SUCK!", "LOSER!", "GO HOME!", "REALLY?!", "WIMP!", "SUCKER!", "HAHAHA!", "YOU MAD?!", "DIE!", "BOOM!"};
+		String[] bumpStrings = new String[] {"BUMP!", "TOINK!", "BOINK!", "BAM!", "WABAM!"};
+		String[] zoomStrings = new String[] {"ZOOM!", "WOOSH!", "SUPER MODE!", "ZOOMBA!", "WARPSPEED!"};
+		Paint foodPaint = new Paint(); // food paint
+        Paint snakeJointPaint = new Paint();
+        Paint snakePaint = new Paint();
+		Paint scoreText = new Paint();
+		Paint popupText = new Paint();
+		Paint circleStrokePaint = new Paint();
+        Paint backgroundPaint = new Paint();
+		GlobalThread globalThread;
 
 		public GameScreen(Context context)
 		{
@@ -197,34 +197,34 @@ public class GameActivity extends Activity implements SensorEventListener
             upTouch = new Point();
 
 			Typeface myType = Typeface.create(Typeface.SANS_SERIF,Typeface.NORMAL);
-			scoretext.setColor(Color.WHITE);
-			scoretext.setTypeface(myType);
+			scoreText.setColor(Color.WHITE);
+			scoreText.setTypeface(myType);
 
-			popuptext.setTypeface(myType);
-			popuptext.setTextAlign(Align.CENTER);
+			popupText.setTypeface(myType);
+			popupText.setTextAlign(Align.CENTER);
 
 			if (metrics.densityDpi == DisplayMetrics.DENSITY_LOW) // adjust to low DPI
 			{
-				popuptext.setTextSize(8);
-				scoretext.setTextSize(9);
+				popupText.setTextSize(8);
+				scoreText.setTextSize(9);
 				headSize = 2;
 				Log.i(getLocalClassName(), "Screen DPI is low, adjustment sizes set to small");
 			}
 
 			else
 			{
-				popuptext.setTextSize(12);
-				scoretext.setTextSize(15);
+				popupText.setTextSize(12);
+				scoreText.setTextSize(15);
 				headSize = 4;
 				Log.i(getLocalClassName(), "Screen DPI is not low, adjustment sizes set to normal");
 			}
 
-            bgpaint.setColor(Color.BLACK);
-            foodpaint.setColor(Color.WHITE);
-            snakepaint.setColor(Color.WHITE);
-            snakepaint.setStyle(Paint.Style.STROKE);
-            snakepaint.setStrokeWidth(headSize * 2);
-			circlestrokepaint.setStyle(Paint.Style.STROKE);
+			backgroundPaint.setColor(Color.BLACK);
+            foodPaint.setColor(Color.WHITE);
+            snakePaint.setColor(Color.WHITE);
+            snakePaint.setStyle(Paint.Style.STROKE);
+            snakePaint.setStrokeWidth(headSize * 2);
+			circleStrokePaint.setStyle(Paint.Style.STROKE);
 
             snakes.add(new Snake(GameActivity.this)); // Add player
 
@@ -233,7 +233,7 @@ public class GameActivity extends Activity implements SensorEventListener
 			else
 				Log.i(getLocalClassName(), "Snakes initialized");
 
-			globalthread = new GlobalThread();
+			globalThread = new GlobalThread();
 		}
 
 		public void surfaceDestroyed(SurfaceHolder holder) // when user leaves game
@@ -284,11 +284,11 @@ public class GameActivity extends Activity implements SensorEventListener
 
 		protected void screenDraw(Canvas canvas)
 		{
-			canvas.drawRect(0, 0, canvasWidth, canvasHeight, bgpaint);
+			canvas.drawRect(0, 0, canvasWidth, canvasHeight, backgroundPaint);
 
             for (int foodCounter = 0; foodCounter < food.size(); foodCounter++)
             {
-                canvas.drawCircle(food.get(foodCounter).position.x, food.get(foodCounter).position.y, headSize, foodpaint);
+                canvas.drawCircle(food.get(foodCounter).position.x, food.get(foodCounter).position.y, headSize, foodPaint);
             }
 
 			for (int snakeCounter = 0; snakeCounter < snakes.size(); snakeCounter++) // snakes drawer
@@ -298,21 +298,21 @@ public class GameActivity extends Activity implements SensorEventListener
                 {
                     if (snakeCounter == 0)
                     {
-                        snakejointpaint.setColor(Color.GRAY);
-                        snakepaint.setColor(Color.GRAY);
+                        snakeJointPaint.setColor(Color.GRAY);
+                        snakePaint.setColor(Color.GRAY);
                     }
                     else
                     {
-                        snakejointpaint.setColor(Color.WHITE);
-                        snakepaint.setColor(Color.WHITE);
+                        snakeJointPaint.setColor(Color.WHITE);
+                        snakePaint.setColor(Color.WHITE);
                     }
 
-                    canvas.drawCircle(currentSnake.position.x, currentSnake.position.y, headSize, snakejointpaint);
+                    canvas.drawCircle(currentSnake.position.x, currentSnake.position.y, headSize, snakeJointPaint);
                     for (int bodyCounter = 0; bodyCounter < currentSnake.bodySegments.size(); bodyCounter++)
                     {
                         SnakeBody currentSegment = currentSnake.bodySegments.get(bodyCounter);
-                        canvas.drawLine(currentSegment.startPoint.x, currentSegment.startPoint.y, currentSegment.endpoint.x, currentSegment.endpoint.y, snakepaint);
-                        canvas.drawCircle(currentSegment.endpoint.x, currentSegment.endpoint.y, headSize, snakejointpaint);
+                        canvas.drawLine(currentSegment.startPoint.x, currentSegment.startPoint.y, currentSegment.endpoint.x, currentSegment.endpoint.y, snakePaint);
+                        canvas.drawCircle(currentSegment.endpoint.x, currentSegment.endpoint.y, headSize, snakeJointPaint);
                     }
                 }
 			}
@@ -326,32 +326,32 @@ public class GameActivity extends Activity implements SensorEventListener
                     switch (currentShockWave.type)
                     {
                         case EXTRA_SMALL_WAVE:
-                            circlestrokepaint.setColor(Color.argb(currentShockWaveLife * 23, 255, 255, 255));
-                            circlestrokepaint.setStrokeWidth(1);
-                            canvas.drawCircle(currentShockWave.position.x, currentShockWave.position.y, 11 - currentShockWaveLife, circlestrokepaint);
+                            circleStrokePaint.setColor(Color.argb(currentShockWaveLife * 23, 255, 255, 255));
+                            circleStrokePaint.setStrokeWidth(1);
+                            canvas.drawCircle(currentShockWave.position.x, currentShockWave.position.y, 11 - currentShockWaveLife, circleStrokePaint);
                             break;
                         case SMALL_WAVE:
-                            circlestrokepaint.setColor(Color.argb(currentShockWaveLife * 12, 255, 255, 255));
-                            circlestrokepaint.setStrokeWidth(2);
-                            canvas.drawCircle(currentShockWave.position.x, currentShockWave.position.y, 21 - currentShockWaveLife, circlestrokepaint);
+                            circleStrokePaint.setColor(Color.argb(currentShockWaveLife * 12, 255, 255, 255));
+                            circleStrokePaint.setStrokeWidth(2);
+                            canvas.drawCircle(currentShockWave.position.x, currentShockWave.position.y, 21 - currentShockWaveLife, circleStrokePaint);
                             break;
                         case MEDIUM_WAVE:
-                            circlestrokepaint.setColor(Color.argb(currentShockWaveLife * 2, 255, 255, 255));
-                            circlestrokepaint.setStrokeWidth(1);
-                            canvas.drawCircle(currentShockWave.position.x, currentShockWave.position.y, 128 - currentShockWaveLife, circlestrokepaint);
+                            circleStrokePaint.setColor(Color.argb(currentShockWaveLife * 2, 255, 255, 255));
+                            circleStrokePaint.setStrokeWidth(1);
+                            canvas.drawCircle(currentShockWave.position.x, currentShockWave.position.y, 128 - currentShockWaveLife, circleStrokePaint);
                             break;
                         case LARGE_WAVE:
-                            circlestrokepaint.setColor(Color.argb(currentShockWaveLife, 255, 255, 255));
-                            circlestrokepaint.setStrokeWidth(1);
-                            canvas.drawCircle(currentShockWave.position.x, currentShockWave.position.y, 252 - currentShockWaveLife, circlestrokepaint);
+                            circleStrokePaint.setColor(Color.argb(currentShockWaveLife, 255, 255, 255));
+                            circleStrokePaint.setStrokeWidth(1);
+                            canvas.drawCircle(currentShockWave.position.x, currentShockWave.position.y, 252 - currentShockWaveLife, circleStrokePaint);
                             break;
                         case FOOD_SPAWN_WAVE:
                             if (currentShockWaveLife < 5)
                                 food.add(new Food(GameActivity.this, currentShockWave.position));
 
-                            circlestrokepaint.setColor(Color.argb(252 - currentShockWaveLife, 255, 255, 255));
-                            circlestrokepaint.setStrokeWidth(1);
-                            canvas.drawCircle(currentShockWave.position.x, currentShockWave.position.y, currentShockWaveLife, circlestrokepaint);
+                            circleStrokePaint.setColor(Color.argb(252 - currentShockWaveLife, 255, 255, 255));
+                            circleStrokePaint.setStrokeWidth(1);
+                            canvas.drawCircle(currentShockWave.position.x, currentShockWave.position.y, currentShockWaveLife, circleStrokePaint);
                     }
                 }
                 else
@@ -363,21 +363,21 @@ public class GameActivity extends Activity implements SensorEventListener
                 Popup currentPopup = popup.get(popupCounter);
                 if (currentPopup.getCounter() > 0) // if popup text is to be shown
                 {
-                    popuptext.setColor(Color.argb(popup.get(popupCounter).getCounter(), 255, 255, 255)); // text fade effect
+                    popupText.setColor(Color.argb(popup.get(popupCounter).getCounter(), 255, 255, 255)); // text fade effect
                     switch (popup.get(popupCounter).type)
                     {
                         case BOO:
-                            canvas.drawText(boostrings[currentPopup.textIndex], currentPopup.position.x, currentPopup.position.y + currentPopup.getCounter(), popuptext);
+                            canvas.drawText(booStrings[currentPopup.textIndex], currentPopup.position.x, currentPopup.position.y + currentPopup.getCounter(), popupText);
                             break;
                         case YEY:
-                            canvas.drawText(yeystrings[currentPopup.textIndex], currentPopup.position.x, currentPopup.position.y + currentPopup.getCounter(), popuptext);
+                            canvas.drawText(yeyStrings[currentPopup.textIndex], currentPopup.position.x, currentPopup.position.y + currentPopup.getCounter(), popupText);
                     }
                 }
                 else
                     popup.remove(popupCounter); // remove alive popup
             }
 
-			canvas.drawText("Score: " + Integer.toString(gameScore), 10, canvasHeight - 10, scoretext);
+			canvas.drawText("Score: " + Integer.toString(gameScore), 10, canvasHeight - 10, scoreText);
 		}
 	}
 

@@ -5,12 +5,20 @@ import android.util.Log;
 
 import java.util.Random;
 
+/**
+ * This is the food object that the snakes eat. It runs on its own thread.
+ */
 final class Food implements Runnable
 {
     Point position;
     GameActivity gameActivity;
     boolean exists = true;
 
+    /**
+     *
+     * @param gameActivity must always be the calling GameActivity
+     * @param position location where the food will appear
+     */
     Food(GameActivity gameActivity, Point position)
     {
         this.gameActivity = gameActivity;
