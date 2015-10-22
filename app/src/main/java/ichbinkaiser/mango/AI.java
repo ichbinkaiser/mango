@@ -70,19 +70,19 @@ final class AI implements Runnable
             {
                 case UP:
                     if (avoid[Snake.Direction.UP.ordinal()]) // if possible collision is detected going up, avoid up
-                        turnTo(Snake.Direction.UP);
+                        turnTo(snake.direction);
                     break;
                 case DOWN:
                     if (avoid[Snake.Direction.DOWN.ordinal()]) // if possible collision is detected going down, avoid down
-                        turnTo(Snake.Direction.DOWN);
+                        turnTo(snake.direction);
                     break;
                 case LEFT:
                     if (avoid[Snake.Direction.LEFT.ordinal()]) // if possible collision is detected going left, avoid left
-                        turnTo(Snake.Direction.LEFT);
+                        turnTo(snake.direction);
                     break;
                 case RIGHT:
                     if (avoid[Snake.Direction.RIGHT.ordinal()]) // if possible collision is detected going right, avoid right
-                        turnTo(Snake.Direction.RIGHT);
+                        turnTo(snake.direction);
             }
 
             if (snake.getMoved(turnPoint) > snake.speed && gameActivity.food.size() > 0) // if the snake has moved and food is on the field
@@ -161,16 +161,16 @@ final class AI implements Runnable
 	 */
     private void turnTo(Snake.Direction currentDirection)
     {
-        if (currentDirection == Snake.Direction.DOWN || currentDirection == Snake.Direction.LEFT) // if snake's current direction is horizontal
-            if (rnd.nextBoolean())
-                turnTo(Snake.Direction.UP, true);
-            else
-                turnTo(Snake.Direction.DOWN, true);
+        if (currentDirection == Snake.Direction.UP || currentDirection == Snake.Direction.DOWN) // if snake's current direction is horizontal
+	        if (rnd.nextBoolean())
+		        turnTo(Snake.Direction.LEFT, true);
+	        else
+		        turnTo(Snake.Direction.RIGHT, true);
         else
-            if (rnd.nextBoolean())
-                turnTo(Snake.Direction.LEFT, true);
-            else
-                turnTo(Snake.Direction.RIGHT, true);
+		    if (rnd.nextBoolean())
+			    turnTo(Snake.Direction.UP, true);
+		    else
+			    turnTo(Snake.Direction.DOWN, true);
     }
 
     private void turnTo(Snake.Direction direction, boolean hasAlternate)

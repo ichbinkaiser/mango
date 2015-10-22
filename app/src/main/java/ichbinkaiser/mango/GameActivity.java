@@ -317,7 +317,7 @@ public class GameActivity extends Activity implements SensorEventListener
                 }
 			}
 
-            for (int shockWaveCounter = 0; shockWaveCounter < shockWave.size(); shockWaveCounter++)  // shockwave drawer
+            for (int shockWaveCounter = 0; shockWaveCounter < shockWave.size(); shockWaveCounter++)  // shock wave drawer
             {
                 ShockWave currentShockWave = shockWave.get(shockWaveCounter);
                 if (currentShockWave.getLife() > 0) // bump animation
