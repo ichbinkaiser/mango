@@ -137,14 +137,13 @@ final class Snake implements Runnable
             if (currentLength > length)
                 bodySegments.get(0).trim(currentLength - length);
 
-            for (int snakecounter = 0; snakecounter < gameactivity.snakes.size(); snakecounter++)
+            for (int snakeCounter = 0; snakeCounter < gameactivity.snakes.size(); snakeCounter++)
             {
-                Snake currentsnake = gameactivity.snakes.get(snakecounter);
-                SnakeBody lastbodysegment = bodySegments.get(bodySegments.size() - 1);
-                for (int bodysegmentcounter = 0; bodysegmentcounter < currentsnake.bodySegments.size(); bodysegmentcounter++)
+                Snake currentSnake = gameactivity.snakes.get(snakeCounter);
+                SnakeBody lastBodySegment = bodySegments.get(bodySegments.size() - 1);
+                for (SnakeBody currentBodySegment : currentSnake.bodySegments)
                 {
-                    SnakeBody currentbodysegment = currentsnake.bodySegments.get(bodysegmentcounter);
-                    if (currentbodysegment != lastbodysegment && detectCollision(currentbodysegment, gameactivity.headSize, gameactivity.headSize))
+                    if (currentBodySegment != lastBodySegment && detectCollision(currentBodySegment, gameactivity.headSize, gameactivity.headSize))
                     {
                         gameactivity.doShake(100);
                         if (gameactivity.snakes.get(0) != this) // check if this is the human player

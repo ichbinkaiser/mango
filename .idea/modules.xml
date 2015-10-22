@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/mango.iml" filepath="$PROJECT_DIR$/mango.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mango.iml" filepath="$PROJECT_DIR$/mango.iml" />
     </modules>
   </component>
 </project>

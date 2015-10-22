@@ -89,15 +89,15 @@
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="guice-4.0-no_aop" level="project" />
-    <orderEntry type="library" exported="" name="ant-1.7.0" level="project" />
-    <orderEntry type="library" exported="" name="jcommander-1.48" level="project" />
     <orderEntry type="library" exported="" name="bsh-2.0b4" level="project" />
+    <orderEntry type="library" exported="" name="jcommander-1.48" level="project" />
+    <orderEntry type="library" exported="" name="ant-1.7.0" level="project" />
     <orderEntry type="library" exported="" name="aopalliance-1.0" level="project" />
     <orderEntry type="library" exported="" name="hamcrest-core-1.1" level="project" />
     <orderEntry type="library" exported="" name="ant-launcher-1.7.0" level="project" />
-    <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
     <orderEntry type="library" exported="" name="junit-4.10" level="project" />
     <orderEntry type="library" exported="" name="snakeyaml-1.15" level="project" />
+    <orderEntry type="library" exported="" name="javax.inject-1" level="project" />
     <orderEntry type="library" exported="" name="testng-6.9.8" level="project" />
     <orderEntry type="library" exported="" name="guava-16.0.1" level="project" />
   </component>
