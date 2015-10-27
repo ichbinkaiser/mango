@@ -9,17 +9,6 @@ import android.util.SparseIntArray;
 
 final class SoundManager
 {
-	enum soundType
-	{
-		POP,
-		LIFE_UP,
-		DING,
-		POPWALL,
-		DOWN,
-		HIT,
-		RESTART,
-		SPAWN
-	}
 
 	SoundPool soundpool;
 	SparseIntArray sounds;
@@ -52,7 +41,7 @@ final class SoundManager
 		}
 	}
 
-	void playSound(soundType sound, float speed)
+	void playSound(SoundType sound, float speed)
 	{
         float streamVolume = audiomanager.getStreamVolume(AudioManager.STREAM_MUSIC);
 		streamVolume = streamVolume / audiomanager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);

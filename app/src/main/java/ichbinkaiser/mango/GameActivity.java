@@ -269,15 +269,15 @@ public class GameActivity extends Activity implements SensorEventListener
                 if (snakes.size() > 0 && Math.abs(downTouch.x - upTouch.x) > (Math.abs(downTouch.y - upTouch.y))) // go with X axis movement
                 {
                     if (downTouch.x > upTouch.x)
-                        snakes.get(0).setDirection(Snake.Direction.LEFT);
+                        snakes.get(0).setDirection(Direction.LEFT);
                     else
-                        snakes.get(0).setDirection(Snake.Direction.RIGHT);
+                        snakes.get(0).setDirection(Direction.RIGHT);
                 }
                 else
                     if (downTouch.y > upTouch.y)
-                        snakes.get(0).setDirection(Snake.Direction.UP);
+                        snakes.get(0).setDirection(Direction.UP);
                     else
-                        snakes.get(0).setDirection(Snake.Direction.DOWN);
+                        snakes.get(0).setDirection(Direction.DOWN);
 			}
 			return true;
 		}

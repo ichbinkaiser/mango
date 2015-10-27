@@ -8,10 +8,10 @@ final class SnakeBody
 {
 	Point startPoint = new Point(); //start point
 	Point endpoint = new Point(); //end point
-    Snake.Direction direction;
+    Direction direction;
     List<SnakeBody> bodySegments;
 
-	SnakeBody(Point startPoint, Snake.Direction direction, List<SnakeBody> bodySegment)
+	SnakeBody(Point startPoint, Direction direction, List<SnakeBody> bodySegment)
 	{
 		this.startPoint.x = startPoint.x;
 		this.startPoint.y = startPoint.y;

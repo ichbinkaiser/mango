@@ -21,9 +21,9 @@ final class AI implements Runnable
 
 	/**
 	 * Constructs the AI object
-	 * @param gameActivity must always be the calling GameActivity
-	 * @param snakeList list of all the running snake objects in the GameActivity
-	 * @param snake the snake object it will control
+	 * @param gameActivity Must always be the calling GameActivity
+	 * @param snakeList List of all the running snake objects in the GameActivity
+	 * @param snake The snake object it will control
 	 */
 	AI(GameActivity gameActivity, List<Snake> snakeList, Snake snake)
 	{
@@ -56,7 +56,7 @@ final class AI implements Runnable
                     SnakeBody lastBodySegment = snake.bodySegments.get(snake.bodySegments.size() - 1); // get the last body segment of the snake
                     for (SnakeBody currentBodySegment : currentSnake.bodySegments) // scan through all the body segments of the current target snake if a possible collision is detected
                     {
-                        for (Snake.Direction currentDirection : Snake.Direction.values()) // scan through all possible directions for possible collision
+                        for (Direction currentDirection : Direction.values()) // scan through all possible directions for possible collision
                         {
                             if (!avoid[currentDirection.ordinal()]) // if the direction is not already in the snakes avoid list, check for possible collision
                                 avoid[currentDirection.ordinal()] = (currentBodySegment != lastBodySegment && snake.detectCollision(currentBodySegment, 50, gameActivity.headSize * 2, currentDirection));
@@ -69,19 +69,19 @@ final class AI implements Runnable
             switch (snake.direction) // perform evasive maneuvers if possible collisions are detected
             {
                 case UP:
-                    if (avoid[Snake.Direction.UP.ordinal()]) // if possible collision is detected going up, avoid up
+                    if (avoid[Direction.UP.ordinal()]) // if possible collision is detected going up, avoid up
                         turnTo(snake.direction);
                     break;
                 case DOWN:
-                    if (avoid[Snake.Direction.DOWN.ordinal()]) // if possible collision is detected going down, avoid down
+                    if (avoid[Direction.DOWN.ordinal()]) // if possible collision is detected going down, avoid down
                         turnTo(snake.direction);
                     break;
                 case LEFT:
-                    if (avoid[Snake.Direction.LEFT.ordinal()]) // if possible collision is detected going left, avoid left
+                    if (avoid[Direction.LEFT.ordinal()]) // if possible collision is detected going left, avoid left
                         turnTo(snake.direction);
                     break;
                 case RIGHT:
-                    if (avoid[Snake.Direction.RIGHT.ordinal()]) // if possible collision is detected going right, avoid right
+                    if (avoid[Direction.RIGHT.ordinal()]) // if possible collision is detected going right, avoid right
                         turnTo(snake.direction);
             }
 
@@ -99,36 +99,37 @@ final class AI implements Runnable
                     }
                 }
 
-                if (snake.direction == Snake.Direction.UP || snake.direction == Snake.Direction.DOWN)
+                if (snake.direction == Direction.UP || snake.direction == Direction.DOWN)
                 {
-                    if (isSameAxis(target.position.y, snake.position.y) // if snake is on the same Y axis as the target food
-		                    || (isNear(target.position.y, snake.position.y, gameActivity.canvasHeight) // food is less than halfway across the screen vertically
-		                        && (snake.direction == Snake.Direction.UP && target.position.y > snake.position.y) // while snake direction is going up and target is on the left
-		                            || (snake.direction == Snake.Direction.DOWN && target.position.y < snake.position.y))) // or snake direction is going down and target is on the right
+	                // if snake is on the same Y axis as the target food or (((food is less than halfway across the screen vertically and ((snake direction is going up and target is on the left) or (snake direction is going down and target is on the right)))
+                    if (isSameAxis(target.position.y, snake.position.y) || (isNear(target.position.y, snake.position.y, gameActivity.canvasHeight) && (snake.direction == Direction.UP && target.position.y > snake.position.y) || (snake.direction == Direction.DOWN && target.position.y < snake.position.y)))
                     {
                         if (target.position.x < snake.position.x)
-                            turnTo(Snake.Direction.LEFT, false);
+                        {
+	                        turnTo(Direction.LEFT, false);
+                        }
                         else if (target.position.x > snake.position.x)
-                            turnTo(Snake.Direction.RIGHT, false);
+                        {
+	                        turnTo(Direction.RIGHT, false);
+                        }
                     }
                 }
 
                 else
                 {
-                    if (isSameAxis(target.position.x, snake.position.x) // if snake is on the same Y axis as the target food
-		                    || (isNear(target.position.x, snake.position.x, gameActivity.canvasWidth) // food is less than halfway across the screen horizontally
-		                        && (snake.direction == Snake.Direction.LEFT && target.position.x > snake.position.x) // while snake direction is going left and target is down
-		                            || (snake.direction == Snake.Direction.RIGHT && target.position.x < snake.position.x))) // or snake direction is going right and target is up
+                    // if snake is on the same Y axis as the target food or (((food is less than halfway across the screen horizontally and ((snake direction is going left and target is down) or (snake direction is going right and target is up)))
+                    if (isSameAxis(target.position.x, snake.position.x) || (isNear(target.position.x, snake.position.x, gameActivity.canvasWidth) && (snake.direction == Direction.LEFT && target.position.x > snake.position.x) || (snake.direction == Direction.RIGHT && target.position.x < snake.position.x)))
                     {
-	                    turnTo(target.position.y > snake.position.y ? Snake.Direction.DOWN : Snake.Direction.UP, false);
+	                    turnTo(target.position.y > snake.position.y ? Direction.DOWN : Direction.UP, false);
 	                    // if target position is DOWN, go DOWN else go UP
                     }
                 }
             }
 
+            // else if there's no food, just move around randomly
             else if (snake.getMoved(turnPoint) > snake.speed && gameActivity.food.indexOf(target) < 0 && rnd.nextInt(100) == 0)
             {
-                turnTo(Snake.Direction.values()[rnd.nextInt(3)], true);
+                turnTo(Direction.values()[rnd.nextInt(3)], true);
             }
 
 			try
@@ -157,75 +158,80 @@ final class AI implements Runnable
 
 	/**
 	 * Change direction based on current direction
-	 * @param currentDirection snakes current direction of travel
+	 * @param currentDirection Snakes current direction of travel
 	 */
-    private void turnTo(Snake.Direction currentDirection)
+    private void turnTo(Direction currentDirection)
     {
-        if (currentDirection == Snake.Direction.UP || currentDirection == Snake.Direction.DOWN) // if snake's current direction is horizontal
+        if (currentDirection == Direction.UP || currentDirection == Direction.DOWN) // if snake's current direction is horizontal
 	        if (rnd.nextBoolean())
-		        turnTo(Snake.Direction.LEFT, true);
+		        turnTo(Direction.LEFT, true);
 	        else
-		        turnTo(Snake.Direction.RIGHT, true);
+		        turnTo(Direction.RIGHT, true);
         else
 		    if (rnd.nextBoolean())
-			    turnTo(Snake.Direction.UP, true);
+			    turnTo(Direction.UP, true);
 		    else
-			    turnTo(Snake.Direction.DOWN, true);
+			    turnTo(Direction.DOWN, true);
     }
 
-    private void turnTo(Snake.Direction direction, boolean hasAlternate)
+	/**
+	 * Turns the controlled snake to a particular direction
+	 * @param direction Direction the snake will turn to
+	 * @param hasAlternate Snake has alternate direction to turn to in case passed direction can cause a collision
+	 */
+    private void turnTo(Direction direction, boolean hasAlternate)
     {
         switch (direction)
         {
             case UP:
-                if (!avoid[Snake.Direction.UP.ordinal()])
+                if (!avoid[Direction.UP.ordinal()]) // if up has no possible collision
                 {
-                    snake.setDirection(Snake.Direction.UP);
+                    snake.setDirection(Direction.UP);
                     turnPoint.set(snake.position.x, snake.position.y);
                 }
 
-                else if (hasAlternate && !avoid[Snake.Direction.DOWN.ordinal()])
+                else if (hasAlternate && !avoid[Direction.DOWN.ordinal()])
                 {
-                    snake.setDirection(Snake.Direction.DOWN);
+                    snake.setDirection(Direction.DOWN);
                     turnPoint.set(snake.position.x, snake.position.y);
                 }
                 break;
             case DOWN:
-                if (!avoid[Snake.Direction.DOWN.ordinal()])
+                if (!avoid[Direction.DOWN.ordinal()])
                 {
-                    snake.setDirection(Snake.Direction.DOWN);
+                    snake.setDirection(Direction.DOWN);
                     turnPoint.set(snake.position.x, snake.position.y);
                 }
 
-                else if (hasAlternate && !avoid[Snake.Direction.UP.ordinal()])
+                else if (hasAlternate && !avoid[Direction.UP.ordinal()])
                 {
-                    snake.setDirection(Snake.Direction.UP);
+                    snake.setDirection(Direction.UP);
                     turnPoint.set(snake.position.x, snake.position.y);
                 }
                 break;
             case LEFT:
-                if (!avoid[Snake.Direction.LEFT.ordinal()])
+                if (!avoid[Direction.LEFT.ordinal()])
                 {
-                    snake.setDirection(Snake.Direction.LEFT);
+                    snake.setDirection(Direction.LEFT);
                     turnPoint.set(snake.position.x, snake.position.y);
                 }
 
-                else if (hasAlternate && !avoid[Snake.Direction.RIGHT.ordinal()])
+                else if (hasAlternate && !avoid[Direction.RIGHT.ordinal()])
                 {
-                    snake.setDirection(Snake.Direction.RIGHT);
+                    snake.setDirection(Direction.RIGHT);
                     turnPoint.set(snake.position.x, snake.position.y);
                 }
                 break;
             case RIGHT:
-                if (!avoid[Snake.Direction.RIGHT.ordinal()])
+                if (!avoid[Direction.RIGHT.ordinal()])
                 {
-                    snake.setDirection(Snake.Direction.RIGHT);
+                    snake.setDirection(Direction.RIGHT);
                     turnPoint.set(snake.position.x, snake.position.y);
                 }
 
-                else if (hasAlternate && !avoid[Snake.Direction.LEFT.ordinal()])
+                else if (hasAlternate && !avoid[Direction.LEFT.ordinal()])
                 {
-                    snake.setDirection(Snake.Direction.LEFT);
+                    snake.setDirection(Direction.LEFT);
                     turnPoint.set(snake.position.x, snake.position.y);
                 }
         }

@@ -9,15 +9,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 final class Snake implements Runnable
 {
-    enum Direction
-    {
-        UP,
-        RIGHT,
-        DOWN,
-        LEFT
-    }
 
-	GameActivity gameactivity;
+    GameActivity gameactivity;
 	Point position = new Point();
     boolean alive = true;
     int spawnWave; // spawn wave animation
@@ -100,7 +93,7 @@ final class Snake implements Runnable
 
 			if (spawnWave > 0) // spawn_wave animation
 			{
-				gameactivity.shockWave.add(new ShockWave(position, ShockWave.waveType.EXTRA_SMALL_WAVE));
+				gameactivity.shockWave.add(new ShockWave(position, WaveType.EXTRA_SMALL_WAVE));
 				spawnWave--;
 			}
 
@@ -148,13 +141,13 @@ final class Snake implements Runnable
                         gameactivity.doShake(100);
                         if (gameactivity.snakes.get(0) != this) // check if this is the human player
                         {
-                            gameactivity.popup.add(new Popup(position, Popup.popupType.BOO));
+                            gameactivity.popup.add(new Popup(position, PopupType.BOO));
                             dieAnimation();
                         }
                         else
                         {
                             gameactivity.running =  false;
-                            GameActivity.soundmanager.playSound(SoundManager.soundType.RESTART, 1);
+                            GameActivity.soundmanager.playSound(SoundType.RESTART, 1);
                             gameactivity.showScore();
                         }
                         break;
@@ -171,7 +164,7 @@ final class Snake implements Runnable
                     gameactivity.doShake(50);
                     length += 2;
 
-                    gameactivity.popup.add(new Popup(position, Popup.popupType.YEY));
+                    gameactivity.popup.add(new Popup(position, PopupType.YEY));
 
                     if (this == gameactivity.snakes.get(0))
                     {
@@ -302,11 +295,11 @@ final class Snake implements Runnable
 
     private void dieAnimation()
     {
-        gameactivity.popup.add(new Popup(position, Popup.popupType.BUMP));
+        gameactivity.popup.add(new Popup(position, PopupType.BUMP));
         for (int bodySegmentCounter = 0; bodySegmentCounter < bodySegments.size(); bodySegmentCounter++)
         {
             SnakeBody currentBodySegment = bodySegments.get(bodySegmentCounter);
-            gameactivity.shockWave.add(new ShockWave(currentBodySegment.startPoint, ShockWave.waveType.LARGE_WAVE));
+            gameactivity.shockWave.add(new ShockWave(currentBodySegment.startPoint, WaveType.LARGE_WAVE));
             switch (bodySegments.get(bodySegmentCounter).direction)
             {
                 case DOWN:
