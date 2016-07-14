@@ -14,8 +14,8 @@ final class SoundManager
 	SparseIntArray sounds;
 	AudioManager  audiomanager;
 	Context context;
-	int soundsloaded = 0;
-    int[] soundlibrary = new int[] {R.raw.pop, R.raw.lifeup, R.raw.ding, R.raw.popwall, R.raw.down, R.raw.hit, R.raw.restart, R.raw.spawn};
+	int soundsLoaded = 0;
+    int[] soundLibrary = {R.raw.pop, R.raw.lifeup, R.raw.ding, R.raw.popwall, R.raw.down, R.raw.hit, R.raw.restart, R.raw.spawn};
 
 	void initSounds(Context context)
 	{
@@ -27,17 +27,17 @@ final class SoundManager
 
 	void loadSounds() // load sounds to IntArray
 	{
-		soundsloaded = 0;
+		soundsLoaded = 0;
 		soundpool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
 			public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-				soundsloaded++;
+				soundsLoaded++;
 				Log.i("SoundManager", "Sample" + Integer.toString(sampleId) + " loaded");
 			}
 		});
 
-		for (int soundindex = 0; soundindex < soundlibrary.length; soundindex++)
+		for (int soundindex = 0; soundindex < soundLibrary.length; soundindex++)
 		{
-			sounds.put(soundindex + 1, soundpool.load(context, soundlibrary[soundindex], 1));
+			sounds.put(soundindex + 1, soundpool.load(context, soundLibrary[soundindex], 1));
 		}
 	}
 
