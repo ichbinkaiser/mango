@@ -62,6 +62,7 @@ final class Snake implements Runnable
 	{
 		Thread thread = new Thread(this);
 		thread.setName("Snake");
+        thread.setDaemon(true);
 		thread.start();
 	}
 

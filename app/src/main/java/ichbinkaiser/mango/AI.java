@@ -38,6 +38,7 @@ final class AI implements Runnable
 	{
 		Thread thread = new Thread(this);
 		thread.setName("AI");
+		thread.setDaemon(true);
 		thread.start();
 	}
 

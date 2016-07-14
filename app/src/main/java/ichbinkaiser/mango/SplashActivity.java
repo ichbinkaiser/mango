@@ -36,6 +36,7 @@ public class SplashActivity extends Activity
     	{
     		Thread thread = new Thread(this);
     		thread.setName("Loader");
+		    thread.setDaemon(true);
     		thread.start();
     	}
 
