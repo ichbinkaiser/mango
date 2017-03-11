@@ -41,17 +41,20 @@ import ichbinkaiser.mango.entity.ShockWave;
 import ichbinkaiser.mango.entity.Snake;
 import ichbinkaiser.mango.entity.SnakeBody;
 
+/**
+ * Main game play activity
+ */
 public class GameActivity extends Activity implements SensorEventListener {
+    static String score;
+    static SoundManager soundmanager = new SoundManager(); // global sound manager
     int canvasHeight;
     int canvasWidth;
     int midpoint; // canvas horizontal midpoint
     int gameScore = 0;
     int AICount = 3;
     boolean isRunning = true; // game isRunning
-    static String score;
     int headSize; // snakeList head
     boolean soloGame = true;
-    static SoundManager soundmanager = new SoundManager(); // global sound manager
     List<Popup> popup = new CopyOnWriteArrayList<>(); // popup messages array list
     List<ShockWave> shockWave = new CopyOnWriteArrayList<>(); // shockwave animation list
     List<Snake> snakes = new CopyOnWriteArrayList<>(); // snakes list
@@ -65,6 +68,10 @@ public class GameActivity extends Activity implements SensorEventListener {
     float rollAngle = 0;
     Random rnd = new Random();
     Point upTouch, downTouch; // player up touch position
+
+    public static SoundManager getSoundmanager() {
+        return soundmanager;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -104,12 +111,14 @@ public class GameActivity extends Activity implements SensorEventListener {
         this.wakelock.release();
     }
 
+    @Override
     public void onPause() {
         super.onPause();
         finish(); // disallow pausing
         sensormanager.unregisterListener(this);
     }
 
+    @Override
     public void onResume() {
         super.onResume();
         sensormanager.registerListener(this, orientation, SensorManager.SENSOR_DELAY_FASTEST);
@@ -131,6 +140,63 @@ public class GameActivity extends Activity implements SensorEventListener {
         v.vibrate(time);
     }
 
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int integer) {
+        Log.i(getLocalClassName(), "Accuracy changed");
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        rollAngle = event.values[2];
+    }
+
+    public int getCanvasHeight() {
+        return canvasHeight;
+    }
+
+    public int getCanvasWidth() {
+        return canvasWidth;
+    }
+
+    public boolean isRunning() {
+        return isRunning;
+    }
+
+    public int getHeadSize() {
+        return headSize;
+    }
+
+    public List<Popup> getPopup() {
+        return popup;
+    }
+
+    public List<ShockWave> getShockWave() {
+        return shockWave;
+    }
+
+    public List<Snake> getSnakes() {
+        return snakes;
+    }
+
+    public List<Food> getFood() {
+        return food;
+    }
+
+    public List<ichbinkaiser.mango.control.AI> getAI() {
+        return AI;
+    }
+
+    public void stop() {
+        isRunning = false;
+    }
+
+    public void addGameScore(int addend) {
+        gameScore += addend;
+    }
+
+    /**
+     * Main thread to hadle in game events
+     */
     private class GlobalThread implements Runnable {
         GlobalThread() {
             start();
@@ -143,6 +209,7 @@ public class GameActivity extends Activity implements SensorEventListener {
             thread.start();
         }
 
+        @Override
         public void run() {
             while (isRunning) {
                 if (rnd.nextInt(100) == 0)
@@ -161,7 +228,13 @@ public class GameActivity extends Activity implements SensorEventListener {
         }
     }
 
+    /**
+     * Handles drawing of elements onto the screen
+     */
     public class GameScreen extends SurfaceView implements Callback {
+        /**
+         * Positive feedback texts
+         */
         String[] yeyStrings = new String[]{
                 "OH YEAH!",
                 "WOHOOO!",
@@ -175,6 +248,9 @@ public class GameActivity extends Activity implements SensorEventListener {
                 "YOU ROCK!"
         };
 
+        /**
+         * Negative feedback texts
+         */
         String[] booStrings = new String[]{
                 "YOU SUCK!",
                 "LOSER!",
@@ -188,6 +264,9 @@ public class GameActivity extends Activity implements SensorEventListener {
                 "BOOM!"
         };
 
+        /**
+         * Collision feedback texts
+         */
         String[] bumpStrings = new String[]{
                 "BUMP!",
                 "TOINK!",
@@ -196,6 +275,9 @@ public class GameActivity extends Activity implements SensorEventListener {
                 "WABAM!"
         };
 
+        /**
+         * Speedup texts
+         */
         String[] zoomStrings = new String[]{
                 "ZOOM!",
                 "WOOSH!",
@@ -237,7 +319,6 @@ public class GameActivity extends Activity implements SensorEventListener {
             popupText.setTextAlign(Align.CENTER);
 
             if (metrics.densityDpi == DisplayMetrics.DENSITY_LOW) { // adjust to low DPI
-
                 popupText.setTextSize(8);
                 scoreText.setTextSize(9);
                 headSize = 2;
@@ -266,22 +347,26 @@ public class GameActivity extends Activity implements SensorEventListener {
             globalThread = new GlobalThread();
         }
 
+        @Override
         public void surfaceDestroyed(SurfaceHolder holder) // when user leaves game
         {
             isRunning = false;
             Log.i(getLocalClassName(), "Surface destroyed");
         }
 
+        @Override
         public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             Log.i(getLocalClassName(), "Surface changed");
         }
 
+        @Override
         public void surfaceCreated(SurfaceHolder holder) // when user enters game
         {
             gamesurfacethread = new GameSurfaceThread(GameActivity.this, holder, this);
             Log.i(getLocalClassName(), "Surface created");
         }
 
+        @Override
         public boolean onTouchEvent(MotionEvent event) {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 downTouch.x = (int) event.getX();
@@ -315,8 +400,7 @@ public class GameActivity extends Activity implements SensorEventListener {
                         foodPaint);
             }
 
-            for (int snakeCounter = 0; snakeCounter < snakes.size(); snakeCounter++) // snakes drawer
-            {
+            for (int snakeCounter = 0; snakeCounter < snakes.size(); snakeCounter++) { // snakes drawer
                 Snake currentSnake = snakes.get(snakeCounter);
                 if (currentSnake.isAlive()) {
                     if (snakeCounter == 0) {
@@ -349,8 +433,7 @@ public class GameActivity extends Activity implements SensorEventListener {
                 }
             }
 
-            for (int shockWaveCounter = 0; shockWaveCounter < shockWave.size(); shockWaveCounter++)  // shock wave drawer
-            {
+            for (int shockWaveCounter = 0; shockWaveCounter < shockWave.size(); shockWaveCounter++) {  // shock wave drawer
                 ShockWave currentShockWave = shockWave.get(shockWaveCounter);
                 if (currentShockWave.getLife() > 0) // bump animation
                 {
@@ -403,11 +486,9 @@ public class GameActivity extends Activity implements SensorEventListener {
                     shockWave.remove(shockWaveCounter); // remove alive shockwave
             }
 
-            for (int popupCounter = 0; popupCounter < popup.size(); popupCounter++) // popup text drawer
-            {
+            for (int popupCounter = 0; popupCounter < popup.size(); popupCounter++) { // popup text drawer
                 Popup currentPopup = popup.get(popupCounter);
-                if (currentPopup.getCounter() > 0) // if popup text is to be shown
-                {
+                if (currentPopup.getCounter() > 0) { // if popup text is to be shown
                     popupText.setColor(Color.argb(popup.get(popupCounter).getCounter(), 255, 255, 255)); // text fade effect
                     switch (popup.get(popupCounter).getType()) {
                         case BOO:
@@ -428,117 +509,5 @@ public class GameActivity extends Activity implements SensorEventListener {
 
             canvas.drawText("Score: " + Integer.toString(gameScore), 10, canvasHeight - 10, scoreText);
         }
-    }
-
-    public void onAccuracyChanged(Sensor sensor, int integer) {
-        Log.i(getLocalClassName(), "Accuracy changed");
-    }
-
-    public void onSensorChanged(SensorEvent event) {
-        rollAngle = event.values[2];
-    }
-
-    public int getCanvasHeight() {
-        return canvasHeight;
-    }
-
-    public int getCanvasWidth() {
-        return canvasWidth;
-    }
-
-    public int getMidpoint() {
-        return midpoint;
-    }
-
-    public int getGameScore() {
-        return gameScore;
-    }
-
-    public int getAICount() {
-        return AICount;
-    }
-
-    public boolean isRunning() {
-        return isRunning;
-    }
-
-    public static String getScore() {
-        return score;
-    }
-
-    public int getHeadSize() {
-        return headSize;
-    }
-
-    public boolean isSoloGame() {
-        return soloGame;
-    }
-
-    public static SoundManager getSoundmanager() {
-        return soundmanager;
-    }
-
-    public List<Popup> getPopup() {
-        return popup;
-    }
-
-    public List<ShockWave> getShockWave() {
-        return shockWave;
-    }
-
-    public List<Snake> getSnakes() {
-        return snakes;
-    }
-
-    public List<Food> getFood() {
-        return food;
-    }
-
-    public List<ichbinkaiser.mango.control.AI> getAI() {
-        return AI;
-    }
-
-    public PowerManager.WakeLock getWakelock() {
-        return wakelock;
-    }
-
-    public GameSurfaceThread getGamesurfacethread() {
-        return gamesurfacethread;
-    }
-
-    public SurfaceHolder getSurfaceholder() {
-        return surfaceholder;
-    }
-
-    public SensorManager getSensormanager() {
-        return sensormanager;
-    }
-
-    public Sensor getOrientation() {
-        return orientation;
-    }
-
-    public float getRollAngle() {
-        return rollAngle;
-    }
-
-    public Random getRnd() {
-        return rnd;
-    }
-
-    public Point getUpTouch() {
-        return upTouch;
-    }
-
-    public Point getDownTouch() {
-        return downTouch;
-    }
-
-    public void stop() {
-        isRunning = false;
-    }
-
-    public void addGameScore(int addend) {
-        gameScore += addend;
     }
 }

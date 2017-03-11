@@ -50,6 +50,7 @@ public class AI implements Runnable {
     /**
      * This is the main AI thread, this is where the AI targeting and obstacle avoidance logic runs
      */
+    @Override
     public void run() // AI thread
     {
         while (gameActivity.isRunning() && snake.isAlive()) // stop when snake is dead or game is no longer running
