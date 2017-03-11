@@ -1,12 +1,13 @@
-package ichbinkaiser.mango;
+package ichbinkaiser.mango.core;
 
 import android.graphics.Canvas;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
-import ichbinkaiser.mango.GameActivity.GameScreen;
+import ichbinkaiser.mango.activity.GameActivity;
+import ichbinkaiser.mango.activity.GameActivity.GameScreen;
 
-final class GameSurfaceThread extends Thread
+public class GameSurfaceThread extends Thread
 {
 	GameActivity gameActivity;
 	SurfaceHolder surfaceHolder;
@@ -24,7 +25,7 @@ final class GameSurfaceThread extends Thread
 	public void run()
 	{
 		Canvas canvas = null;
-		while(gameActivity.running)
+		while(gameActivity.isRunning())
 		{
 			try
 			{

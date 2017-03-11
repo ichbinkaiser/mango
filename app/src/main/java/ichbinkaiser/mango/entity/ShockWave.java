@@ -1,39 +1,42 @@
-package ichbinkaiser.mango;
+package ichbinkaiser.mango.entity;
 
 import android.graphics.Point;
 
 import java.util.Random;
 
-final class ShockWave
+import ichbinkaiser.mango.activity.GameActivity;
+
+public class ShockWave
 {
 
     Point position = new Point();
 	int life; // animation index life
 	WaveType type; // shockWave type
 	
-	ShockWave(Point position, WaveType type)
+	public ShockWave(Point position, WaveType type)
 	{
         setType(type);
 		this.position.x = position.x;
 		this.position.y = position.y;
 	}
 
-    ShockWave(int x, int y)
+    public ShockWave(int x, int y)
     {
         setType(WaveType.SMALL_WAVE);
         this.position.x = x;
         this.position.y = y;
     }
 
-    ShockWave(GameActivity gameActivity)
+    public ShockWave(GameActivity gameActivity)
     {
         Random rnd = new Random();
         this.type = WaveType.FOOD_SPAWN_WAVE;
-        position.set(rnd.nextInt(gameActivity.canvasWidth - (gameActivity.headSize * 2) + gameActivity.headSize), rnd.nextInt(gameActivity.canvasHeight - (gameActivity.headSize * 2) + gameActivity.headSize));
+        position.set(rnd.nextInt(gameActivity.getCanvasHeight()- (gameActivity.getHeadSize() * 2) + gameActivity.getHeadSize()),
+                rnd.nextInt(gameActivity.getCanvasHeight() - (gameActivity.getHeadSize() * 2) + gameActivity.getHeadSize()));
         life = 252;
     }
 
-    private void setType(WaveType type)
+    public void setType(WaveType type)
     {
         switch (type)
         {
@@ -59,5 +62,13 @@ final class ShockWave
             return life -= 1;
         else
             return life -= 4;
+    }
+
+    public Point getPosition() {
+        return position;
+    }
+
+    public WaveType getType() {
+        return type;
     }
 }

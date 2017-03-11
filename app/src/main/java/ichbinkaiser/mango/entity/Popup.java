@@ -1,10 +1,10 @@
-package ichbinkaiser.mango;
+package ichbinkaiser.mango.entity;
 
 import android.graphics.Point;
 
 import java.util.Random;
 
-final class Popup 
+public class Popup
 {
 
 	Point position = new Point();
@@ -23,5 +23,21 @@ final class Popup
 	public int getCounter() 
 	{
 		return counter--;
+	}
+
+	public Point getPosition() {
+		return position;
+	}
+
+	public PopupType getType() {
+		return type;
+	}
+
+	public Random getRnd() {
+		return rnd;
+	}
+
+	public int getTextIndex() {
+		return textIndex;
 	}
 }

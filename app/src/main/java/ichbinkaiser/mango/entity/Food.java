@@ -1,14 +1,16 @@
-package ichbinkaiser.mango;
+package ichbinkaiser.mango.entity;
 
 import android.graphics.Point;
 import android.util.Log;
 
 import java.util.Random;
 
+import ichbinkaiser.mango.activity.GameActivity;
+
 /**
  * This is the food object that the snakes eat. It runs on its own thread.
  */
-final class Food implements Runnable
+public class Food implements Runnable
 {
     Point position;
     GameActivity gameActivity;
@@ -19,7 +21,7 @@ final class Food implements Runnable
      * @param gameActivity must always be the calling GameActivity
      * @param position location where the food will appear
      */
-    Food(GameActivity gameActivity, Point position)
+    public Food(GameActivity gameActivity, Point position)
     {
         this.gameActivity = gameActivity;
         this.position = position;
@@ -51,15 +53,27 @@ final class Food implements Runnable
 
         if (exists)
         {
-            gameActivity.shockWave.add(new ShockWave(position, WaveType.SMALL_WAVE));
-            gameActivity.food.remove(this);
+            gameActivity.getShockWave().add(new ShockWave(position, WaveType.SMALL_WAVE));
+            gameActivity.getFood().remove(this);
         }
     }
 
     public void eat()
     {
         exists = false;
-        gameActivity.food.remove(this);
+        gameActivity.getFood().remove(this);
+    }
+
+    public Point getPosition() {
+        return position;
+    }
+
+    public GameActivity getGameActivity() {
+        return gameActivity;
+    }
+
+    public boolean isExists() {
+        return exists;
     }
 }
 

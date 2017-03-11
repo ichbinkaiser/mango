@@ -1,17 +1,17 @@
-package ichbinkaiser.mango;
+package ichbinkaiser.mango.entity;
 
 import android.graphics.Point;
 
 import java.util.List;
 
-final class SnakeBody
+public class SnakeBody
 {
 	Point startPoint = new Point(); //start point
 	Point endpoint = new Point(); //end point
     Direction direction;
     List<SnakeBody> bodySegments;
 
-	SnakeBody(Point startPoint, Direction direction, List<SnakeBody> bodySegment)
+	public SnakeBody(Point startPoint, Direction direction, List<SnakeBody> bodySegment)
 	{
 		this.startPoint.x = startPoint.x;
 		this.startPoint.y = startPoint.y;
@@ -56,5 +56,13 @@ final class SnakeBody
             default:
                 return 0;
         }
+    }
+
+    public Point getStartPoint() {
+        return startPoint;
+    }
+
+    public Point getEndpoint() {
+        return endpoint;
     }
 }

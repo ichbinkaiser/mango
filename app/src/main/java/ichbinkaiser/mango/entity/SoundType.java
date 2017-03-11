@@ -1,6 +1,6 @@
-package ichbinkaiser.mango;
+package ichbinkaiser.mango.entity;
 
-enum SoundType
+public enum SoundType
 {
 	POP,
 	LIFE_UP,

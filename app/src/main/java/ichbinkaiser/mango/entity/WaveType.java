@@ -1,6 +1,6 @@
-package ichbinkaiser.mango;
+package ichbinkaiser.mango.entity;
 
-enum WaveType
+public enum WaveType
 {
     EXTRA_SMALL_WAVE,
     SMALL_WAVE,

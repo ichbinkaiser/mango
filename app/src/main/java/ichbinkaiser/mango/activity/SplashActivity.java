@@ -1,10 +1,12 @@
-package ichbinkaiser.mango;
+package ichbinkaiser.mango.activity;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
+
+import ichbinkaiser.mango.R;
 
 public class SplashActivity extends Activity 
 {
@@ -43,7 +45,7 @@ public class SplashActivity extends Activity
         public void run()
         {
             GameActivity.soundmanager.loadSounds();
-            while(GameActivity.soundmanager.soundsLoaded != GameActivity.soundmanager.soundLibrary.length)
+            while(GameActivity.soundmanager.getSoundsLoaded() != GameActivity.soundmanager.getSoundLibrary().length)
             {
                 try
                 {

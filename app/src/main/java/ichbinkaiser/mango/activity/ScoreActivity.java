@@ -1,4 +1,4 @@
-package ichbinkaiser.mango;
+package ichbinkaiser.mango.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
+
+import ichbinkaiser.mango.R;
 
 public class ScoreActivity extends Activity 
 {
