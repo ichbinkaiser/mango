@@ -10,6 +10,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import ichbinkaiser.mango.R;
+import ichbinkaiser.mango.core.SoundManager;
 
 public class MainActivity extends Activity {
 
@@ -24,7 +25,7 @@ public class MainActivity extends Activity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        GameActivity.soundmanager.doCleanup();
+        SoundManager.getInstance().doCleanup();
     }
 
     public void startGame(View view) {

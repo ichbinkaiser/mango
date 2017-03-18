@@ -147,7 +147,8 @@ public class AI implements Runnable {
      * @param currentDirection Snakes current direction of travel
      */
     private void turnTo(Direction currentDirection) {
-        if (currentDirection == Direction.UP || currentDirection == Direction.DOWN) // if snake's current direction is horizontal
+        if (currentDirection == Direction.UP
+                || currentDirection == Direction.DOWN) // if snake's current direction is horizontal
             if (rnd.nextBoolean())
                 turnTo(Direction.LEFT, true);
             else
@@ -167,8 +168,8 @@ public class AI implements Runnable {
     private void turnTo(Direction direction, boolean hasAlternate) {
         switch (direction) {
             case UP:
-                if (!avoid[Direction.UP.ordinal()]) // if up has no possible collision
-                {
+                if (!avoid[Direction.UP.ordinal()]) {
+                    // if up has no possible collision
                     snake.setDirection(Direction.UP);
                     turnPoint.set(snake.getPosition().x, snake.getPosition().y);
                 } else if (hasAlternate && !avoid[Direction.DOWN.ordinal()]) {

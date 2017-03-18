@@ -32,8 +32,6 @@ import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import ichbinkaiser.mango.control.AI;
-import ichbinkaiser.mango.core.GameSurfaceThread;
-import ichbinkaiser.mango.core.SoundManager;
 import ichbinkaiser.mango.entity.Direction;
 import ichbinkaiser.mango.entity.Food;
 import ichbinkaiser.mango.entity.Popup;
@@ -46,7 +44,6 @@ import ichbinkaiser.mango.entity.SnakeBody;
  */
 public class GameActivity extends Activity implements SensorEventListener {
     static String score;
-    static SoundManager soundmanager = new SoundManager(); // global sound manager
     int canvasHeight;
     int canvasWidth;
     int midpoint; // canvas horizontal midpoint
@@ -68,10 +65,6 @@ public class GameActivity extends Activity implements SensorEventListener {
     float rollAngle = 0;
     Random rnd = new Random();
     Point upTouch, downTouch; // player up touch position
-
-    public static SoundManager getSoundmanager() {
-        return soundmanager;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -192,6 +185,36 @@ public class GameActivity extends Activity implements SensorEventListener {
 
     public void addGameScore(int addend) {
         gameScore += addend;
+    }
+
+    private static class GameSurfaceThread extends Thread {
+        GameActivity gameActivity;
+        SurfaceHolder surfaceHolder;
+        GameScreen gameScreen;
+
+        public GameSurfaceThread(GameActivity gameActivity, SurfaceHolder holder, GameScreen drawMain) {
+            this.gameActivity = gameActivity;
+            setName("SurfaceView");
+            surfaceHolder = holder;
+            gameScreen = drawMain;
+            start();
+        }
+
+        @Override
+        public void run() {
+            Canvas canvas = null;
+            while (gameActivity.isRunning) {
+                try {
+                    canvas = surfaceHolder.lockCanvas(null);
+                    gameScreen.screenDraw(canvas);
+                } catch (NullPointerException e) {
+                    Log.e(this.gameActivity.getLocalClassName(), e.toString());
+                } finally {
+                    if (canvas != null)
+                        surfaceHolder.unlockCanvasAndPost(canvas);
+                }
+            }
+        }
     }
 
     /**

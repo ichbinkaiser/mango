@@ -7,9 +7,11 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import ichbinkaiser.mango.R;
+import ichbinkaiser.mango.core.SoundManager;
 
 public class SplashActivity extends Activity {
-    private Loader loader = new Loader();
+    Loader loader = new Loader();
+    SoundManager soundManager = SoundManager.getInstance();
 
     @Override
     public void onCreate(Bundle savedinstancestate) {
@@ -18,7 +20,7 @@ public class SplashActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_splash);
-        GameActivity.soundmanager.initSounds(this);
+        soundManager.initSounds(this);
 
         loader.start();
     }
@@ -39,8 +41,8 @@ public class SplashActivity extends Activity {
 
         @Override
         public void run() {
-            GameActivity.soundmanager.loadSounds();
-            while (GameActivity.soundmanager.getSoundsLoaded() != GameActivity.soundmanager.getSoundLibrary().length) {
+            soundManager.loadSounds();
+            while (soundManager.getSoundsLoaded() != soundManager.getSoundLibrary().length) {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {

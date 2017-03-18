@@ -12,13 +12,21 @@ import ichbinkaiser.mango.entity.SoundType;
 
 public class SoundManager
 {
-
+	private static SoundManager instance = new SoundManager();
 	SoundPool soundpool;
 	SparseIntArray sounds;
 	AudioManager  audiomanager;
 	Context context;
 	int soundsLoaded = 0;
     int[] soundLibrary = {R.raw.pop, R.raw.lifeup, R.raw.ding, R.raw.popwall, R.raw.down, R.raw.hit, R.raw.restart, R.raw.spawn};
+
+	private SoundManager() {
+		// This is not to be instantiated externally
+	}
+
+	public static SoundManager getInstance() {
+		return instance;
+	}
 
 	public void initSounds(Context context)
 	{
@@ -44,32 +52,16 @@ public class SoundManager
 		}
 	}
 
-	public void playSound(SoundType sound, float speed)
+	public void playSound(SoundType sound)
 	{
         float streamVolume = audiomanager.getStreamVolume(AudioManager.STREAM_MUSIC);
 		streamVolume = streamVolume / audiomanager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-		soundpool.play(sounds.get(sound.ordinal()), streamVolume, streamVolume, 1, 0, speed);
+		soundpool.play(sounds.get(sound.ordinal()), streamVolume, streamVolume, 1, 0, 1f);
 	}
 
 	public void doCleanup()
 	{
 		soundpool.release();
-	}
-
-	public SoundPool getSoundpool() {
-		return soundpool;
-	}
-
-	public SparseIntArray getSounds() {
-		return sounds;
-	}
-
-	public AudioManager getAudiomanager() {
-		return audiomanager;
-	}
-
-	public Context getContext() {
-		return context;
 	}
 
 	public int getSoundsLoaded() {
