@@ -53,28 +53,23 @@ public class AI implements Runnable {
     @Override
     public void run() // AI thread
     {
-        while (gameActivity.isRunning() && snake.isAlive()) // stop when snake is dead or game is no longer running
-        {
-            if (snake.getMoved(turnPoint) > snake.getSpeed()) // if the snake has moved from its last position
-            {
+        while (gameActivity.isRunning() && snake.isAlive()) { // stop when snake is dead or game is no longer running
+            if (snake.getMoved(turnPoint) > snake.getSpeed()) { // if the snake has moved from its last position
                 avoid = new boolean[]{false, false, false, false}; // set directions to avoid to clear (should always be 4 elements)
-                for (Snake currentSnake : snakeList) // scan through all snakes in the game
-                {
+                for (Snake currentSnake : snakeList) { // scan through all snakes in the game
                     SnakeBody lastBodySegment = snake.getBodySegments().get(snake.getBodySegments().size() - 1); // get the last body segment of the snake
-                    for (SnakeBody currentBodySegment : currentSnake.getBodySegments()) // scan through all the body segments of the current target snake if a possible collision is detected
-                    {
-                        for (Direction currentDirection : Direction.values()) // scan through all possible directions for possible collision
-                        {
+                    for (SnakeBody currentBodySegment : currentSnake.getBodySegments()) { // scan through all the body segments of the current target snake if a possible collision is detected
+                        for (Direction currentDirection : Direction.values()) { // scan through all possible directions for possible collision
                             if (!avoid[currentDirection.ordinal()]) // if the direction is not already in the snakes avoid list, check for possible collision
-                                avoid[currentDirection.ordinal()] = (currentBodySegment != lastBodySegment && snake.detectCollision(currentBodySegment, 50, gameActivity.getHeadSize() * 2, currentDirection));
-                            // avoid the current direction if the current body segment is last body segment and a possible collision is detected
+                                avoid[currentDirection.ordinal()] = // avoid the current direction if
+                                        currentBodySegment != lastBodySegment  // the current body segment is last body segment
+                                                && snake.detectCollision(currentBodySegment, 50, gameActivity.getHeadSize() * 2, currentDirection); // and a possible collision is detected
                         }
                     }
                 }
             }
 
-            switch (snake.getDirection()) // perform evasive maneuvers if possible collisions are detected
-            {
+            switch (snake.getDirection()) { // perform evasive maneuvers if possible collisions are detected
                 case UP:
                     if (avoid[Direction.UP.ordinal()]) // if possible collision is detected going up, avoid up
                         turnTo(snake.getDirection());
@@ -124,10 +119,7 @@ public class AI implements Runnable {
                         turnTo(target.getPosition().y > snake.getPosition().y ? Direction.DOWN : Direction.UP, false); // if target position is DOWN, go DOWN else go UP
                     }
                 }
-            }
-
-            // else if there's no food, just move around randomly
-            else if (snake.getMoved(turnPoint) > snake.getSpeed() && gameActivity.getFood().indexOf(target) < 0 && rnd.nextInt(100) == 0) {
+            } else if (snake.getMoved(turnPoint) > snake.getSpeed() && gameActivity.getFood().indexOf(target) < 0 && rnd.nextInt(100) == 0) { // else if there's no food, just move around randomly
                 turnTo(Direction.values()[rnd.nextInt(3)], true);
             }
 
@@ -211,33 +203,5 @@ public class AI implements Runnable {
                     turnPoint.set(snake.getPosition().x, snake.getPosition().y);
                 }
         }
-    }
-
-    public GameActivity getGameActivity() {
-        return gameActivity;
-    }
-
-    public List<Snake> getSnakeList() {
-        return snakeList;
-    }
-
-    public Food getTarget() {
-        return target;
-    }
-
-    public Snake getSnake() {
-        return snake;
-    }
-
-    public Random getRnd() {
-        return rnd;
-    }
-
-    public Point getTurnPoint() {
-        return turnPoint;
-    }
-
-    public boolean[] getAvoid() {
-        return avoid;
     }
 }
