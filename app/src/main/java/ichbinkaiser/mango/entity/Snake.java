@@ -9,6 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import ichbinkaiser.mango.activity.GameActivity;
 import ichbinkaiser.mango.control.AI;
+import ichbinkaiser.mango.core.SoundManager;
 
 public class Snake implements Runnable {
 
@@ -130,7 +131,7 @@ public class Snake implements Runnable {
                             dieAnimation();
                         } else {
                             gameactivity.stop();
-                            GameActivity.getSoundmanager().playSound(SoundType.RESTART, 1);
+                            SoundManager.getInstance().playSound(SoundType.RESTART);
                             gameactivity.showScore();
                         }
                         break;
@@ -161,21 +162,6 @@ public class Snake implements Runnable {
             }
         }
         gameactivity.getSnakes().remove(this); // remove this dead snake
-    }
-
-    public void setDirection(Direction direction) {
-        if ((this.direction == Direction.LEFT
-                || this.direction == Direction.RIGHT)
-                && (direction == Direction.UP || direction == Direction.DOWN)) {
-            this.direction = direction;
-            bodySegments.add(new SnakeBody(position, direction, bodySegments));
-        } else if ((this.direction == Direction.DOWN
-                || this.direction == Direction.UP)
-                && (direction == Direction.LEFT
-                || direction == Direction.RIGHT)) {
-            this.direction = direction;
-            bodySegments.add(new SnakeBody(position, direction, bodySegments));
-        }
     }
 
     /**
@@ -335,6 +321,21 @@ public class Snake implements Runnable {
 
     public Direction getDirection() {
         return direction;
+    }
+
+    public void setDirection(Direction direction) {
+        if ((this.direction == Direction.LEFT
+                || this.direction == Direction.RIGHT)
+                && (direction == Direction.UP || direction == Direction.DOWN)) {
+            this.direction = direction;
+            bodySegments.add(new SnakeBody(position, direction, bodySegments));
+        } else if ((this.direction == Direction.DOWN
+                || this.direction == Direction.UP)
+                && (direction == Direction.LEFT
+                || direction == Direction.RIGHT)) {
+            this.direction = direction;
+            bodySegments.add(new SnakeBody(position, direction, bodySegments));
+        }
     }
 
     public List<SnakeBody> getBodySegments() {
