@@ -44,11 +44,10 @@ import lombok.Getter;
  */
 public class GameActivity extends Activity {
 
-    @Getter
-    private static String score;
     private int gameScore = 0;
     private int AICount = 3;
     private boolean soloGame = true;
+    
     private Random rnd = new Random();
     private Point upTouch, downTouch; // player up touch position
     private WakeLock wakelock;
@@ -56,6 +55,10 @@ public class GameActivity extends Activity {
     private SurfaceHolder surfaceholder;
     private SensorManager sensormanager;
     private Sensor orientation;
+
+    @Getter
+    private static String score;
+
     @Getter
     private int canvasHeight;
 
