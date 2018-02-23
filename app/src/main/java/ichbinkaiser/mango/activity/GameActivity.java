@@ -11,11 +11,10 @@ import android.graphics.Paint.Align;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.os.PowerManager.WakeLock;
 import android.os.Vibrator;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -43,40 +42,46 @@ import lombok.Getter;
 /**
  * Main game play activity
  */
-public class GameActivity extends Activity implements SensorEventListener {
-    static String score;
+public class GameActivity extends Activity {
 
     @Getter
-    int canvasHeight;
+    private static String score;
+    private int gameScore = 0;
+    private int AICount = 3;
+    private boolean soloGame = true;
+    private Random rnd = new Random();
+    private Point upTouch, downTouch; // player up touch position
+    private WakeLock wakelock;
+    private GameSurfaceThread gamesurfacethread;
+    private SurfaceHolder surfaceholder;
+    private SensorManager sensormanager;
+    private Sensor orientation;
+    @Getter
+    private int canvasHeight;
 
     @Getter
-    int canvasWidth;
-    int midpoint; // canvas horizontal midpoint
-    int gameScore = 0;
-    int AICount = 3;
+    private int canvasWidth;
+
     @Getter
-    boolean isRunning = true; // game isRunning
+    private boolean isRunning = true; // game isRunning
+
     @Getter
-    int headSize; // snakeList head
-    boolean soloGame = true;
+    private int headSize; // snakeList head
+
     @Getter
-    List<Popup> popup = new CopyOnWriteArrayList<>(); // popup messages array list
+    private List<Popup> popup = new CopyOnWriteArrayList<>(); // popup messages array list
+
     @Getter
-    List<ShockWave> shockWave = new CopyOnWriteArrayList<>(); // shockwave animation list
+    private List<ShockWave> shockWave = new CopyOnWriteArrayList<>(); // shockwave animation list
+
     @Getter
-    List<Snake> snakes = new CopyOnWriteArrayList<>(); // snakes list
+    private List<Snake> snakes = new CopyOnWriteArrayList<>(); // snakes list
+
     @Getter
-    List<Food> food = new CopyOnWriteArrayList<>(); // food list
+    private List<Food> food = new CopyOnWriteArrayList<>(); // food list
+
     @Getter
-    List<AI> AI = new CopyOnWriteArrayList<>(); // snakes list
-    PowerManager.WakeLock wakelock;
-    GameSurfaceThread gamesurfacethread;
-    SurfaceHolder surfaceholder;
-    SensorManager sensormanager;
-    Sensor orientation;
-    float rollAngle = 0;
-    Random rnd = new Random();
-    Point upTouch, downTouch; // player up touch position
+    private List<AI> AI = new CopyOnWriteArrayList<>(); // snakes list
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,7 +111,6 @@ public class GameActivity extends Activity implements SensorEventListener {
 
         sensormanager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         orientation = sensormanager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
-        sensormanager.registerListener(this, orientation, SensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override
@@ -120,13 +124,11 @@ public class GameActivity extends Activity implements SensorEventListener {
     public void onPause() {
         super.onPause();
         finish(); // disallow pausing
-        sensormanager.unregisterListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        sensormanager.registerListener(this, orientation, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     public void showScore() // show score screen
@@ -143,16 +145,6 @@ public class GameActivity extends Activity implements SensorEventListener {
     {
         Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(time);
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int integer) {
-        Log.i(getLocalClassName(), "Accuracy changed");
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        rollAngle = event.values[2];
     }
 
     public void stop() {
@@ -305,7 +297,6 @@ public class GameActivity extends Activity implements SensorEventListener {
 
             canvasWidth = metrics.widthPixels;
             canvasHeight = metrics.heightPixels;
-            midpoint = canvasWidth / 2;
 
             downTouch = new Point();
             upTouch = new Point();
