@@ -101,6 +101,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/lint" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/manifests" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/prebuild" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/processing-tools" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/reload-dex" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/res" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/restart-dex" />
@@ -118,14 +119,15 @@
     <orderEntry type="library" name="junit:junit:4.10@jar" level="project" />
     <orderEntry type="library" name="org.yaml:snakeyaml:1.15@jar" level="project" />
     <orderEntry type="library" name="org.hamcrest:hamcrest-core:1.1@jar" level="project" />
-    <orderEntry type="library" name="com.beust:jcommander:1.48@jar" level="project" />
-    <orderEntry type="library" name="org.apache.ant:ant-launcher:1.7.0@jar" level="project" />
     <orderEntry type="library" name="com.google.guava:guava:16.0.1@jar" level="project" />
-    <orderEntry type="library" name="org.apache.ant:ant:1.7.0@jar" level="project" />
     <orderEntry type="library" name="aopalliance:aopalliance:1.0@jar" level="project" />
-    <orderEntry type="library" name="org.beanshell:bsh:2.0b4@jar" level="project" />
     <orderEntry type="library" name="org.testng:testng:6.9.8@jar" level="project" />
     <orderEntry type="library" name="com.google.inject:guice:4.0:no_aop@jar" level="project" />
     <orderEntry type="library" name="javax.inject:javax.inject:1@jar" level="project" />
+    <orderEntry type="library" name="com.beust:jcommander:1.48@jar" level="project" />
+    <orderEntry type="library" name="org.projectlombok:lombok:1.16.18@jar" level="project" />
+    <orderEntry type="library" name="org.apache.ant:ant-launcher:1.7.0@jar" level="project" />
+    <orderEntry type="library" name="org.apache.ant:ant:1.7.0@jar" level="project" />
+    <orderEntry type="library" name="org.beanshell:bsh:2.0b4@jar" level="project" />
   </component>
 </module>

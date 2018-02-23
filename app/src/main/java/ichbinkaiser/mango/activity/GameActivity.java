@@ -38,24 +38,36 @@ import ichbinkaiser.mango.entity.Popup;
 import ichbinkaiser.mango.entity.ShockWave;
 import ichbinkaiser.mango.entity.Snake;
 import ichbinkaiser.mango.entity.SnakeBody;
+import lombok.Getter;
 
 /**
  * Main game play activity
  */
 public class GameActivity extends Activity implements SensorEventListener {
     static String score;
+
+    @Getter
     int canvasHeight;
+
+    @Getter
     int canvasWidth;
     int midpoint; // canvas horizontal midpoint
     int gameScore = 0;
     int AICount = 3;
+    @Getter
     boolean isRunning = true; // game isRunning
+    @Getter
     int headSize; // snakeList head
     boolean soloGame = true;
+    @Getter
     List<Popup> popup = new CopyOnWriteArrayList<>(); // popup messages array list
+    @Getter
     List<ShockWave> shockWave = new CopyOnWriteArrayList<>(); // shockwave animation list
+    @Getter
     List<Snake> snakes = new CopyOnWriteArrayList<>(); // snakes list
+    @Getter
     List<Food> food = new CopyOnWriteArrayList<>(); // food list
+    @Getter
     List<AI> AI = new CopyOnWriteArrayList<>(); // snakes list
     PowerManager.WakeLock wakelock;
     GameSurfaceThread gamesurfacethread;
@@ -141,42 +153,6 @@ public class GameActivity extends Activity implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
         rollAngle = event.values[2];
-    }
-
-    public int getCanvasHeight() {
-        return canvasHeight;
-    }
-
-    public int getCanvasWidth() {
-        return canvasWidth;
-    }
-
-    public boolean isRunning() {
-        return isRunning;
-    }
-
-    public int getHeadSize() {
-        return headSize;
-    }
-
-    public List<Popup> getPopup() {
-        return popup;
-    }
-
-    public List<ShockWave> getShockWave() {
-        return shockWave;
-    }
-
-    public List<Snake> getSnakes() {
-        return snakes;
-    }
-
-    public List<Food> getFood() {
-        return food;
-    }
-
-    public List<ichbinkaiser.mango.control.AI> getAI() {
-        return AI;
     }
 
     public void stop() {
