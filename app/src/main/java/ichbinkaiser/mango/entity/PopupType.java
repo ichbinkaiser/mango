@@ -1,7 +1,6 @@
 package ichbinkaiser.mango.entity;
 
-public enum PopupType
-{
+public enum PopupType {
 	YEY,
 	BOO,
 	BUMP

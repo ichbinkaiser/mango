@@ -43,10 +43,6 @@ import lombok.Getter;
  * Main game play activity
  */
 public class GameActivity extends Activity {
-
-    private int gameScore = 0;
-    private int AICount = 3;
-    private boolean soloGame = true;
     
     private Random rnd = new Random();
     private Point upTouch, downTouch; // player up touch position
@@ -56,20 +52,9 @@ public class GameActivity extends Activity {
     private SensorManager sensormanager;
     private Sensor orientation;
 
-    @Getter
-    private static String score;
-
-    @Getter
-    private int canvasHeight;
-
-    @Getter
-    private int canvasWidth;
-
-    @Getter
-    private boolean isRunning = true; // game isRunning
-
-    @Getter
-    private int headSize; // snakeList head
+    private int gameScore = 0;
+    private int AICount = 3;
+    private boolean soloGame = true;
 
     @Getter
     private List<Popup> popup = new CopyOnWriteArrayList<>(); // popup messages array list
@@ -85,6 +70,21 @@ public class GameActivity extends Activity {
 
     @Getter
     private List<AI> AI = new CopyOnWriteArrayList<>(); // snakes list
+
+    @Getter
+    private static String score;
+
+    @Getter
+    private int canvasHeight;
+
+    @Getter
+    private int canvasWidth;
+
+    @Getter
+    private boolean isRunning = true; // game isRunning
+
+    @Getter
+    private int headSize; // snakeList head
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

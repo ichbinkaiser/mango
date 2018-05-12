@@ -1,7 +1,6 @@
 package ichbinkaiser.mango.entity;
 
-public enum Direction
-{
+public enum Direction {
     UP,
     RIGHT,
     DOWN,

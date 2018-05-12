@@ -22,7 +22,13 @@ public class AI implements Runnable {
     private Snake snake; // snake object this AI controls
     private Random rnd = new Random();
     private Point turnPoint = new Point();
-    private boolean[] avoid = new boolean[]{false, false, false, false};
+
+    private boolean[] avoid = new boolean[] {
+            false,
+            false,
+            false,
+            false
+    };
 
     /**
      * Constructs the AI object

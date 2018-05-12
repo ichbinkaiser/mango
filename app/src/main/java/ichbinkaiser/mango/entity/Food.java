@@ -11,9 +11,10 @@ import ichbinkaiser.mango.activity.GameActivity;
  * This is the food object that the snakes eat. It runs on its own thread.
  */
 public class Food implements Runnable {
-    Point position;
-    GameActivity gameActivity;
-    boolean exists = true;
+    private Point position;
+    private GameActivity gameActivity;
+
+    private boolean exists = true;
 
     /**
      * @param gameActivity must always be the calling GameActivity
@@ -55,14 +56,6 @@ public class Food implements Runnable {
 
     public Point getPosition() {
         return position;
-    }
-
-    public GameActivity getGameActivity() {
-        return gameActivity;
-    }
-
-    public boolean isExists() {
-        return exists;
     }
 }
 
