@@ -141,7 +141,7 @@ public class Snake implements Runnable {
 
             for (int foodCounter = 0; foodCounter < gameactivity.getFood().size(); foodCounter++) {
                 Food currentFood = gameactivity.getFood().get(foodCounter);
-                if (Math.abs(position.x - currentFood.position.x) <= gameactivity.getHeadSize() * 2 && Math.abs(position.y - currentFood.position.y) <= gameactivity.getHeadSize() * 2) {
+                if (Math.abs(position.x - currentFood.getPosition().x) <= gameactivity.getHeadSize() * 2 && Math.abs(position.y - currentFood.getPosition().y) <= gameactivity.getHeadSize() * 2) {
                     gameactivity.getFood().get(foodCounter).eat();
                     gameactivity.doShake(50);
                     length += 2;

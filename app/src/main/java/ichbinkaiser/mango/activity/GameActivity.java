@@ -96,7 +96,7 @@ public class GameActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         final PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        this.wakelock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "My Tag");
+        this.wakelock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "mango:app");
         this.wakelock.acquire();
 
         soloGame = getIntent().getBooleanExtra("SOLO_GAME", false);

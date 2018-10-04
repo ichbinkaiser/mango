@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 28
+    buildToolsVersion '28.0.2'
 
     defaultConfig {
         applicationId "ichbinkaiser.mango"
@@ -30,7 +30,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    provided 'org.testng:testng:6.9.8'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    compileOnly 'org.testng:testng:6.9.8'
     compileOnly 'org.projectlombok:lombok:1.16.18'
 }
