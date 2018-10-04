@@ -113,7 +113,7 @@ public class GameActivity extends Activity {
         setContentView(lLayout);
 
         sensormanager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        orientation = sensormanager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+        orientation = sensormanager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
     }
 
     @Override
